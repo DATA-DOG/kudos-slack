@@ -42,3 +42,23 @@ func loadUsers() {
 
 	users = userResponse.Members
 }
+
+func findMemberByTag(tag string) (*Member, error) {
+	for _, user := range users {
+		if user.Name == tag {
+			return &user, nil
+		}
+	}
+
+	return &Member{}, fmt.Errorf("Member with tag %s could not be found!", tag)
+}
+
+func findMemberByID(ID string) (*Member, error) {
+	for _, user := range users {
+		if user.ID == ID {
+			return &user, nil
+		}
+	}
+
+	return &Member{}, fmt.Errorf("Member with ID %s could not be found!", ID)
+}

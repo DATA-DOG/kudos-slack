@@ -11,27 +11,22 @@ import (
 
 // Kudo main kudos
 type Kudo struct {
+	ID         int64
 	Kudo       string
 	MemberTo   *Member
 	MemberFrom *Member
-	Likes      like
-}
-
-type like struct {
-	Count   int
-	Members []Member
+	LikeCount  int
 }
 
 var kudos []Kudo
 
 func main() {
 	readConfig()
-	loadDatabase()
 	loadUsers()
+	loadDatabase()
 
 	router := httprouter.New()
 	router.GET("/", index)
-	router.GET("/user/:id", getUserByID)
 
 	router.POST("/kudo", handleKudoCmd)
 
@@ -40,6 +35,13 @@ func main() {
 }
 
 func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	accessToken := r.PostFormValue("token")
+
+	if accessToken != config.SlackCommandToken {
+		fmt.Fprint(w, "Invalid access token")
+		return
+	}
 
 	memberFrom, err := getMemberFrom(r)
 	if err != nil {
@@ -69,26 +71,8 @@ func printKudoUsage(w http.ResponseWriter) {
 
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	for _, kudo := range kudos {
-		fmt.Fprint(w, kudo.MemberFrom.Name, ": ", kudo.MemberTo.Name, ", ", kudo.Kudo, kudo.Likes.Count, "\n")
+		fmt.Fprint(w, kudo.MemberFrom.Name, ": ", kudo.MemberTo.Name, ", ", kudo.Kudo, kudo.LikeCount, "\n")
 	}
-}
-
-func findMemberByTag(tag string) (*Member, error) {
-	for _, user := range users {
-		if user.Name == tag {
-			return &user, nil
-		}
-	}
-
-	return &Member{}, fmt.Errorf("Member with tag %s could not be found!", tag)
-}
-
-func getUserByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	//			w.Header().Set("Content-Type", "text/html")
-
-	//ps.ByName("id")
-
-	//	fmt.Fprintf(w, "hello, %s!\n", "GUEST")
 }
 
 func getMemberFrom(r *http.Request) (*Member, error) {

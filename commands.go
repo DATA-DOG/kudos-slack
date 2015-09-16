@@ -12,8 +12,9 @@ func handleNewKudoCommand(w http.ResponseWriter, memberFrom *Member, target stri
 		fmt.Fprint(w, err)
 		return
 	}
-
-	kudos = append(kudos, Kudo{extra, member, memberFrom, like{}})
+	kudo := Kudo{0, extra, member, memberFrom, 0}
+	kudos = append(kudos, kudo)
+	dbSaveKudo(&kudo)
 
 	notifyUser("New kudo from <@"+memberFrom.ID+">!\n"+extra, *member)
 	notifyChannel("New kudo from <@" + memberFrom.ID + "> was given to <@" + member.ID + ">!\n" + extra)
@@ -30,18 +31,17 @@ func handleLikeCommand(w http.ResponseWriter, memberFrom *Member, target string)
 
 	for i := len(kudos) - 1; i >= 0; i-- {
 		if kudos[i].MemberTo.ID == member.ID {
-			for _, likeMember := range kudos[i].Likes.Members {
-				if likeMember.ID == memberFrom.ID {
-					fmt.Fprint(w, "You have already liked this.")
-					return
-				}
+			if dbKudoLiked(kudos[i], *memberFrom) {
+				fmt.Fprint(w, "You have already liked this.")
+				return
 			}
 
-			kudos[i].Likes.Count++
-			kudos[i].Likes.Members = append(kudos[i].Likes.Members, *memberFrom)
+			kudos[i].LikeCount++
+			dbUpdateKudoLikes(kudos[i])
+			addMemberToLike(kudos[i], memberFrom)
 
 			fmt.Fprint(w, "Thank you!")
-			notifyUser(fmt.Sprint("<@", memberFrom.ID, "> likes your kudo! Total likes: ", kudos[i].Likes.Count, "\n", kudos[i].Kudo), *member)
+			notifyUser(fmt.Sprint("<@", memberFrom.ID, "> likes your kudo! Total likes: ", kudos[i].LikeCount, "\n", kudos[i].Kudo), *member)
 
 			return
 		}

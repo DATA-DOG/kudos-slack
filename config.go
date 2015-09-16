@@ -10,11 +10,12 @@ import (
 
 // Config main config file structure
 type Config struct {
-	SlackToken     string `yaml:"slack_token"`
-	Port           int    `yaml:"port"`
-	SlackWebookURL string `yaml:"slack_webhook_url"`
-	Channel        string `yaml:"channel"`
-	Database       string `yaml:"database"`
+	SlackToken        string `yaml:"slack_token"`
+	Port              int    `yaml:"port"`
+	SlackWebookURL    string `yaml:"slack_webhook_url"`
+	Channel           string `yaml:"channel"`
+	Database          string `yaml:"database"`
+	SlackCommandToken string `yaml:"slack_command_token"`
 }
 
 var config Config

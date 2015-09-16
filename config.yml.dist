@@ -3,3 +3,4 @@ port: 8080
 slack_webhook_url: ""
 channel: "kudos"
 database: "./kudo.db"
+slack_command_token: ""
