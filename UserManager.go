@@ -30,11 +30,11 @@ type Profile struct {
 }
 
 var users []Member
-var reqParams = &napping.Params{"token": config.SlackToken}
 
 func loadUsers() {
 	var err interface{}
 	var userResponse UserResponse
+	var reqParams = &napping.Params{"token": config.SlackToken}
 
 	napping.Get("https://slack.com/api/users.list", reqParams, &userResponse, err)
 

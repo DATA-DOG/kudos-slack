@@ -19,17 +19,16 @@ var kudos []kudo
 
 func main() {
 	readConfig()
+	loadUsers()
 
 	router := httprouter.New()
 	router.GET("/", index)
 	router.GET("/user/:id", getUserByID)
-	//	router.POST("/kudo/add", addKudo)
 
 	router.POST("/kudo", handleKudoCmd)
 
-	loadUsers()
-
-	log.Fatal(http.ListenAndServe(":8080", router))
+	fmt.Print("Listening on port ", config.Port, "...")
+	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.Port), router))
 }
 
 func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

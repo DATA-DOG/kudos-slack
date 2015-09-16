@@ -11,6 +11,7 @@ import (
 // Config main config file structure
 type Config struct {
 	SlackToken string `yaml:"slack_token"`
+	Port       int    `yaml:"port"`
 }
 
 var config Config
