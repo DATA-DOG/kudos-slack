@@ -11,8 +11,14 @@ import (
 
 type kudo struct {
 	Kudo       string
-	MemberTo   Member
-	MemberFrom Member
+	MemberTo   *Member
+	MemberFrom *Member
+	Likes      like
+}
+
+type like struct {
+	Count   int
+	Members *[]Member
 }
 
 var kudos []kudo
@@ -55,7 +61,23 @@ func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 			fmt.Fprint(w, err)
 			return
 		}
-		kudos = append(kudos, kudo{extra, member, memberFrom})
+		kudos = append(kudos, kudo{extra, member, memberFrom, like{}})
+		notifyUser("New kudo from <@"+memberFrom.ID+">!\n"+extra, *member)
+		fmt.Fprint(w, "Kudo has been registered!")
+		break
+	case "like":
+		member, err := findMemberByTag(strings.TrimLeft(target, "@"))
+		if err != nil {
+			fmt.Fprint(w, err)
+			return
+		}
+		for i := len(kudos) - 1; i >= 0; i-- {
+			kudo := kudos[i]
+			if kudo.MemberTo.ID == member.ID {
+				kudo.Likes.Count++
+				fmt.Fprint(w, "Got that!")
+			}
+		}
 	default:
 		printKudoUsage(w)
 	}
@@ -67,18 +89,18 @@ func printKudoUsage(w http.ResponseWriter) {
 
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	for _, kudo := range kudos {
-		fmt.Fprint(w, kudo.MemberFrom.Name, ": ", kudo.MemberTo.Name, ", ", kudo.Kudo, "\n")
+		fmt.Fprint(w, kudo.MemberFrom.Name, ": ", kudo.MemberTo.Name, ", ", kudo.Kudo, kudo.Likes.Count, "\n")
 	}
 }
 
-func findMemberByTag(tag string) (Member, error) {
+func findMemberByTag(tag string) (*Member, error) {
 	for _, user := range users {
 		if user.Name == tag {
-			return user, nil
+			return &user, nil
 		}
 	}
 
-	return Member{}, fmt.Errorf("Member with tag %s could not be found!", tag)
+	return &Member{}, fmt.Errorf("Member with tag %s could not be found!", tag)
 }
 
 func getUserByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
