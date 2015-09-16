@@ -38,62 +38,24 @@ func main() {
 }
 
 func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	var text = r.PostFormValue("text")
-	var memberFromTag = r.PostFormValue("user_name")
 
-	textParts := strings.SplitN(text, " ", 3)
-	if len(textParts) < 2 {
-		printKudoUsage(w)
+	memberFrom, err := getMemberFrom(r)
+	if err != nil {
+		fmt.Fprint(w, "Invalid user provided")
 		return
 	}
-	command, target, extra := textParts[0], textParts[1], ""
 
-	if len(textParts) == 3 {
-		extra = textParts[2]
-	}
-
-	var memberFrom, err = findMemberByTag(memberFromTag)
+	command, target, extra, err := getCommandParams(r)
 	if err != nil {
-		loadUsers()
-		memberFrom, err = findMemberByTag(memberFromTag)
+		printKudoUsage(w)
+		return
 	}
 
 	switch command {
 	case "to":
-		member, err := findMemberByTag(strings.TrimLeft(target, "@"))
-		if err != nil {
-			fmt.Fprint(w, err)
-			return
-		}
-		kudos = append(kudos, kudo{extra, member, memberFrom, like{}})
-		notifyUser("New kudo from <@"+memberFrom.ID+">!\n"+extra, *member)
-		notifyChannel("New kudo from <@" + memberFrom.ID + "> was given to <@" + member.ID + ">!\n" + extra)
-		fmt.Fprint(w, "Kudo has been registered!")
-		break
+		handleNewKudoCommand(w, memberFrom, target, extra)
 	case "like":
-		member, err := findMemberByTag(strings.TrimLeft(target, "@"))
-		if err != nil {
-			fmt.Fprint(w, err)
-			return
-		}
-		for i := len(kudos) - 1; i >= 0; i-- {
-			if kudos[i].MemberTo.ID == member.ID {
-
-				for _, likeMember := range kudos[i].Likes.Members {
-					if likeMember.ID == memberFrom.ID {
-						fmt.Fprint(w, "You have already liked this.")
-						return
-					}
-				}
-
-				kudos[i].Likes.Count++
-				fmt.Fprint(w, "Thank you!")
-				notifyUser(fmt.Sprint("<@", memberFrom.ID, "> likes your kudo! Total likes: ", kudos[i].Likes.Count, "\n", kudos[i].Kudo), *member)
-				kudos[i].Likes.Members = append(kudos[i].Likes.Members, *memberFrom)
-				return
-			}
-		}
-		fmt.Fprint(w, "Found nothing to like...")
+		handleLikeCommand(w, memberFrom, target)
 	default:
 		printKudoUsage(w)
 	}
@@ -125,4 +87,36 @@ func getUserByID(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	//ps.ByName("id")
 
 	//	fmt.Fprintf(w, "hello, %s!\n", "GUEST")
+}
+
+func getMemberFrom(r *http.Request) (*Member, error) {
+	memberFromTag := r.PostFormValue("user_name")
+
+	var memberFrom, err = findMemberByTag(memberFromTag)
+	if err != nil {
+		loadUsers()
+		memberFrom, err = findMemberByTag(memberFromTag)
+
+		if err != nil {
+			return &Member{}, fmt.Errorf("Could not find member %s", memberFromTag)
+		}
+	}
+
+	return memberFrom, nil
+}
+
+func getCommandParams(r *http.Request) (string, string, string, error) {
+	var text = r.PostFormValue("text")
+
+	textParts := strings.SplitN(text, " ", 3)
+	if len(textParts) < 2 {
+		return "", "", "", fmt.Errorf("Invalid number of parameters.")
+	}
+
+	command, target, extra := textParts[0], textParts[1], ""
+	if len(textParts) == 3 {
+		extra = textParts[2]
+	}
+
+	return command, target, extra, nil
 }
