@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"text/template"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -70,9 +71,35 @@ func printKudoUsage(w http.ResponseWriter) {
 }
 
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	for _, kudo := range kudos {
-		fmt.Fprint(w, kudo.MemberFrom.Name, ": ", kudo.MemberTo.Name, ", ", kudo.Kudo, kudo.LikeCount, "\n")
+
+	r.Header.Set("Content-Type", "text/html")
+
+	var page = `
+	<!DOCTYPE html>
+	<html lang="en">
+	  <head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	</head>
+	<body>
+	{{range .}}
+		<blockquote>
+			<p><span class="text-muted">@{{.MemberTo.Name}}:</span> {{.Kudo}}</p>
+			<footer>{{.MemberFrom.RealName}} <cite title="Likes">({{.LikeCount}} likes)</cite></footer>
+		</blockquote>
+	{{end}}
+	</body>
+	</html>
+	`
+	tmpl := template.New("page")
+	var err error
+	if tmpl, err = tmpl.Parse(page); err != nil {
+		fmt.Println(err)
 	}
+
+	tmpl.Execute(w, kudos)
 }
 
 func getMemberFrom(r *http.Request) (*Member, error) {
