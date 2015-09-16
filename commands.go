@@ -13,7 +13,7 @@ func handleNewKudoCommand(w http.ResponseWriter, memberFrom *Member, target stri
 		return
 	}
 
-	kudos = append(kudos, kudo{extra, member, memberFrom, like{}})
+	kudos = append(kudos, Kudo{extra, member, memberFrom, like{}})
 
 	notifyUser("New kudo from <@"+memberFrom.ID+">!\n"+extra, *member)
 	notifyChannel("New kudo from <@" + memberFrom.ID + "> was given to <@" + member.ID + ">!\n" + extra)

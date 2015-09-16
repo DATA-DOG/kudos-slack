@@ -9,7 +9,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type kudo struct {
+// Kudo main kudos
+type Kudo struct {
 	Kudo       string
 	MemberTo   *Member
 	MemberFrom *Member
@@ -21,10 +22,11 @@ type like struct {
 	Members []Member
 }
 
-var kudos []kudo
+var kudos []Kudo
 
 func main() {
 	readConfig()
+	loadDatabase()
 	loadUsers()
 
 	router := httprouter.New()
