@@ -13,6 +13,7 @@ type Config struct {
 	SlackToken     string `yaml:"slack_token"`
 	Port           int    `yaml:"port"`
 	SlackWebookURL string `yaml:"slack_webhook_url"`
+	Channel        string `yaml:"channel"`
 }
 
 var config Config

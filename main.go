@@ -18,7 +18,7 @@ type kudo struct {
 
 type like struct {
 	Count   int
-	Members *[]Member
+	Members []Member
 }
 
 var kudos []kudo
@@ -42,11 +42,15 @@ func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 	var memberFromTag = r.PostFormValue("user_name")
 
 	textParts := strings.SplitN(text, " ", 3)
-	if len(textParts) != 3 {
+	if len(textParts) < 2 {
 		printKudoUsage(w)
 		return
 	}
-	command, target, extra := textParts[0], textParts[1], textParts[2]
+	command, target, extra := textParts[0], textParts[1], ""
+
+	if len(textParts) == 3 {
+		extra = textParts[2]
+	}
 
 	var memberFrom, err = findMemberByTag(memberFromTag)
 	if err != nil {
@@ -63,6 +67,7 @@ func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		}
 		kudos = append(kudos, kudo{extra, member, memberFrom, like{}})
 		notifyUser("New kudo from <@"+memberFrom.ID+">!\n"+extra, *member)
+		notifyChannel("New kudo from <@" + memberFrom.ID + "> was given to <@" + member.ID + ">!\n" + extra)
 		fmt.Fprint(w, "Kudo has been registered!")
 		break
 	case "like":
@@ -72,19 +77,30 @@ func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 			return
 		}
 		for i := len(kudos) - 1; i >= 0; i-- {
-			kudo := kudos[i]
-			if kudo.MemberTo.ID == member.ID {
-				kudo.Likes.Count++
-				fmt.Fprint(w, "Got that!")
+			if kudos[i].MemberTo.ID == member.ID {
+
+				for _, likeMember := range kudos[i].Likes.Members {
+					if likeMember.ID == memberFrom.ID {
+						fmt.Fprint(w, "You have already liked this.")
+						return
+					}
+				}
+
+				kudos[i].Likes.Count++
+				fmt.Fprint(w, "Thank you!")
+				notifyUser(fmt.Sprint("<@", memberFrom.ID, "> likes your kudo! Total likes: ", kudos[i].Likes.Count, "\n", kudos[i].Kudo), *member)
+				kudos[i].Likes.Members = append(kudos[i].Likes.Members, *memberFrom)
+				return
 			}
 		}
+		fmt.Fprint(w, "Found nothing to like...")
 	default:
 		printKudoUsage(w)
 	}
 }
 
 func printKudoUsage(w http.ResponseWriter) {
-	fmt.Fprint(w, "incorrect usage, baby!")
+	fmt.Fprint(w, "New kudo: `/kudos to @user reason`\nLike user latest kudo: `/kudos like @user`")
 }
 
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
