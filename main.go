@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
-	"text/template"
 
 	"github.com/julienschmidt/httprouter"
 )
