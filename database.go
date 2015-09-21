@@ -32,6 +32,9 @@ func createDatabase() {
 	sqlStmt = `CREATE TABLE IF NOT EXISTS likes (user text, kudo int);`
 	_, err = db.Exec(sqlStmt)
 	checkErr(err)
+
+	sqlStmt = `ALTER TABLE kudos ADD COLUMN value INTEGER DEFAULT 1`
+	_, err = db.Exec(sqlStmt)
 }
 
 func dbSaveKudo(kudo *Kudo) {
@@ -39,10 +42,10 @@ func dbSaveKudo(kudo *Kudo) {
 		return
 	}
 
-	stmt, err := db.Prepare("INSERT INTO kudos (user, userFrom, kudo, likes) VALUES (?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO kudos (user, userFrom, kudo, likes, value) VALUES (?, ?, ?, ?, ?)")
 	checkErr(err)
 
-	res, err := stmt.Exec(kudo.MemberTo.ID, kudo.MemberFrom.ID, kudo.Kudo, kudo.LikeCount)
+	res, err := stmt.Exec(kudo.MemberTo.ID, kudo.MemberFrom.ID, kudo.Kudo, kudo.LikeCount, kudo.Value)
 	checkErr(err)
 
 	id, err := res.LastInsertId()
@@ -80,14 +83,14 @@ func addMemberToLike(kudo Kudo, member *Member) {
 }
 
 func loadKudos() {
-	rows, err := db.Query("SELECT id, user, userFrom, kudo, likes FROM kudos")
+	rows, err := db.Query("SELECT id, user, userFrom, kudo, likes, value FROM kudos")
 	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
 		var kudo Kudo
 		var memberFrom, memberTo string
-		err = rows.Scan(&kudo.ID, &memberTo, &memberFrom, &kudo.Kudo, &kudo.LikeCount)
+		err = rows.Scan(&kudo.ID, &memberTo, &memberFrom, &kudo.Kudo, &kudo.LikeCount, &kudo.Value)
 		checkErr(err)
 
 		kudo.MemberFrom, _ = findMemberByID(memberFrom)

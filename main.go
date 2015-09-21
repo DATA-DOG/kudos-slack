@@ -17,6 +17,7 @@ type Kudo struct {
 	MemberTo   *Member
 	MemberFrom *Member
 	LikeCount  int
+	Value      int
 }
 
 var kudos []Kudo
@@ -30,6 +31,7 @@ func main() {
 	router.GET("/", index)
 
 	router.POST("/kudo", handleKudoCmd)
+	router.POST("/boo", handleKudoCmd)
 
 	fmt.Print("Listening on port ", config.Port, "...")
 	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.Port), router))
@@ -58,7 +60,11 @@ func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 
 	switch command {
 	case "to":
-		handleNewKudoCommand(w, memberFrom, target, extra)
+		value := 1
+		if r.PostFormValue("command") == "/boo" {
+			value = -1
+		}
+		handleNewKudoCommand(w, memberFrom, target, extra, value)
 	case "like":
 		handleLikeCommand(w, memberFrom, target)
 	default:
@@ -87,7 +93,8 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	{{range .}}
 		<blockquote>
 			<p><span class="text-muted">@{{.MemberTo.Name}}:</span> {{.Kudo}}</p>
-			<footer>{{.MemberFrom.RealName}} <cite title="Likes">({{.LikeCount}} likes)</cite></footer>
+			<footer>{{if eq .Value 1}}Kudo{{else}}Boo{{end}} from {{.MemberFrom.RealName}}
+			<cite title="Likes">({{.LikeCount}} likes)</cite></footer>
 		</blockquote>
 	{{end}}
 	</body>
@@ -99,7 +106,18 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		fmt.Println(err)
 	}
 
-	tmpl.Execute(w, kudos)
+	tmpl.Execute(w, reverseKudos())
+}
+
+func reverseKudos() <-chan Kudo {
+	ch := make(chan Kudo)
+	go func() {
+		for i := len(kudos) - 1; i > 0; i-- {
+			ch <- kudos[i]
+		}
+		close(ch)
+	}()
+	return ch
 }
 
 func getMemberFrom(r *http.Request) (*Member, error) {
