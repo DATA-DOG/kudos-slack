@@ -92,6 +92,7 @@ func loadKudos() {
 		var memberFrom, memberTo string
 		err = rows.Scan(&kudo.ID, &memberTo, &memberFrom, &kudo.Kudo, &kudo.LikeCount, &kudo.Value)
 		checkErr(err)
+		kudo.Color = randomColor()
 
 		kudo.MemberFrom, _ = findMemberByID(memberFrom)
 		kudo.MemberTo, _ = findMemberByID(memberTo)

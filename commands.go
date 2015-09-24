@@ -12,7 +12,7 @@ func handleNewKudoCommand(w http.ResponseWriter, memberFrom *Member, target stri
 		fmt.Fprint(w, err)
 		return
 	}
-	kudo := Kudo{0, extra, member, memberFrom, 0, value}
+	kudo := Kudo{0, extra, member, memberFrom, 0, value, randomColor()}
 	dbSaveKudo(&kudo)
 	kudos = append(kudos, kudo)
 

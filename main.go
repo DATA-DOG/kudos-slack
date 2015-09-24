@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"strings"
 
@@ -18,6 +19,7 @@ type Kudo struct {
 	MemberFrom *Member
 	LikeCount  int
 	Value      int
+	Color      string
 }
 
 var kudos []Kudo
@@ -29,9 +31,10 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/", index)
-
 	router.POST("/kudo", handleKudoCmd)
 	router.POST("/boo", handleKudoCmd)
+
+	router.ServeFiles("/asset/*filepath", http.Dir("asset"))
 
 	fmt.Print("Listening on port ", config.Port, "...")
 	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.Port), router))
@@ -82,21 +85,28 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	var page = `
 	<!DOCTYPE html>
-	<html lang="en">
-	  <head>
-	    <meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<html>
+	<head>
+  	<meta charset="utf-8">
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	  <link rel="stylesheet" href="/asset/c.css">
+	  <link href='https://fonts.googleapis.com/css?family=Patrick+Hand' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
+	<div class="notes">
 	{{range .}}
-		<blockquote>
-			<p><span class="text-muted">@{{.MemberTo.Name}}:</span> {{.Kudo}}</p>
-			<footer>{{if eq .Value 1}}Kudo{{else}}Boo{{end}} from {{.MemberFrom.RealName}}
-			<cite title="Likes">({{.LikeCount}} likes)</cite></footer>
-		</blockquote>
+		<div class="note note-{{.Color}}">
+			<div class="pin"></div>
+			{{if eq .Value 0}}
+		  	<div class="sad"></div>
+			{{end}}
+			<p>@{{.MemberTo.Name}},<br>{{.Kudo}}</p>
+			<span>@{{.MemberFrom.Name}}</span>
+		</div>
 	{{end}}
+	</div>
 	</body>
 	</html>
 	`
@@ -150,4 +160,9 @@ func getCommandParams(r *http.Request) (string, string, string, error) {
 	}
 
 	return command, target, extra, nil
+}
+
+func randomColor() string {
+	colors := []string{"yellow", "pink", "green", "red", "orange", ""}
+	return colors[rand.Intn(len(colors))]
 }

@@ -1,0 +1,89 @@
+body {
+  background: url('sea.jpg') left top;
+}
+
+.note {
+  background: url('c.png');
+  background-color: #4B83EE;
+  height: 300px;
+  width: 300px;
+  margin-left: 50px;
+  margin-top: 50px;
+  position: relative;
+  border-radius: 1px;
+  box-shadow: -3px 3px 3px rgba(0,0,0,0.3);
+  font-family: 'Patrick Hand', cursive;
+  padding: 10px;
+  padding-top: 30px;
+  float: left;
+}
+
+.notes .note { transform: rotate(-0.5deg); }
+.notes .note:nth-child(2n) { transform: none; }
+.notes .note:nth-child(3n) { transform: rotate(-1.5deg); }
+.notes .note:nth-child(5n)  { transform: rotate(2.1deg); }
+
+.note:nth-of-type(n+1) {
+  transform: rotate(5deg);
+}
+
+.note {
+  transform: rotate(-3deg);
+}
+
+.note-orange {
+  background-color: #DAA065;
+}
+
+.note-red {
+  background-color: #DC4744;
+}
+
+.note-green {
+  background-color: #8AC48B;
+}
+
+.note-pink {
+  background-color: #D757C5;
+}
+
+.note-yellow {
+  background-color: #CEC967;
+}
+
+.note p {
+  color: black;
+  font-size: 2em;
+  overflow: hidden;
+  max-height: 240px;
+  margin: 0;
+}
+
+.note span {
+  font-size: 1.5em;
+  display: inline-block;
+  width: 270px;
+  text-align: right;
+  position: absolute;
+}
+
+.pin {
+  background: url('pin.png');
+  height: 47px;
+  width: 50px;
+  position: absolute;
+  margin-left: -25px;
+  left: 50%;
+  top: -10px;
+  background-size: contain;
+}
+
+.sad {
+  background-image: url('sad.png');
+  height: 250px;
+  background-size: contain;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  opacity: 0.3;
+}
