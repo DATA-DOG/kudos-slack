@@ -102,7 +102,7 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 			{{if eq .Value -1}}
 		  	<div class="sad"></div>
 			{{end}}
-			<p>@{{.MemberTo.Name}} {{.Value}},<br>{{.Kudo}}</p>
+			<p>@{{.MemberTo.Name}},<br>{{.Kudo}}</p>
 			<span>@{{.MemberFrom.Name}}</span>
 		</div>
 	{{end}}
