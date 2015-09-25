@@ -16,6 +16,7 @@ type Config struct {
 	Channel           string `yaml:"channel"`
 	Database          string `yaml:"database"`
 	SlackCommandToken string `yaml:"slack_command_token"`
+	AssetPath         string `yaml:"asset_path"`
 }
 
 var config Config

@@ -34,7 +34,7 @@ func main() {
 	router.POST("/kudo", handleKudoCmd)
 	router.POST("/boo", handleKudoCmd)
 
-	router.ServeFiles("/asset/*filepath", http.Dir("asset"))
+	router.ServeFiles("/asset/*filepath", http.Dir(config.AssetPath))
 
 	fmt.Print("Listening on port ", config.Port, "...")
 	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.Port), router))
@@ -42,12 +42,12 @@ func main() {
 
 func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-	accessToken := r.PostFormValue("token")
-
-	if accessToken != config.SlackCommandToken {
-		fmt.Fprint(w, "Invalid access token")
-		return
-	}
+	// accessToken := r.PostFormValue("token")
+	//
+	// if accessToken != config.SlackCommandToken {
+	// 	fmt.Fprint(w, "Invalid access token")
+	// 	return
+	// }
 
 	memberFrom, err := getMemberFrom(r)
 	if err != nil {
@@ -99,10 +99,10 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	{{range .}}
 		<div class="note note-{{.Color}}">
 			<div class="pin"></div>
-			{{if eq .Value 0}}
+			{{if eq .Value -1}}
 		  	<div class="sad"></div>
 			{{end}}
-			<p>@{{.MemberTo.Name}},<br>{{.Kudo}}</p>
+			<p>@{{.MemberTo.Name}} {{.Value}},<br>{{.Kudo}}</p>
 			<span>@{{.MemberFrom.Name}}</span>
 		</div>
 	{{end}}

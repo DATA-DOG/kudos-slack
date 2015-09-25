@@ -80,10 +80,10 @@ body {
 
 .sad {
   background-image: url('sad.png');
-  height: 250px;
+  width: 250px;
   background-size: contain;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
+  height: 250px;
+  position: absolute;
+  bottom: -42px;
   opacity: 0.3;
 }
