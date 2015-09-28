@@ -22,6 +22,11 @@ type Kudo struct {
 	Color      string
 }
 
+type pageView struct {
+	Kudos  []Kudo
+	Events []event
+}
+
 var kudos []Kudo
 
 func main() {
@@ -41,13 +46,6 @@ func main() {
 }
 
 func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
-	// accessToken := r.PostFormValue("token")
-	//
-	// if accessToken != config.SlackCommandToken {
-	// 	fmt.Fprint(w, "Invalid access token")
-	// 	return
-	// }
 
 	memberFrom, err := getMemberFrom(r)
 	if err != nil {
@@ -88,15 +86,18 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	<html>
 	<head>
   	<meta charset="utf-8">
+		<meta http-equiv="refresh" content="60">
 	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	  <link rel="stylesheet" href="/asset/c.css">
-	  <link href='https://fonts.googleapis.com/css?family=Patrick+Hand' rel='stylesheet' type='text/css'>
+	  <link href='https://fonts.googleapis.com/css?family=Patrick+Hand|Droid+Sans' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
+	<div class="row">
+  <div class="col-xs-7">
 	<div class="notes">
-	{{range .}}
+	{{range .Kudos}}
 		<div class="note note-{{.Color}}">
 			<div class="pin"></div>
 			{{if eq .Value -1}}
@@ -107,6 +108,30 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		</div>
 	{{end}}
 	</div>
+	</div>
+<div class="col-xs-5">
+	<div class="calendar">
+	<div class="pin pin-left"></div>
+      <div class="pin pin-right"></div>
+      <h1>Happening today</h1>
+      <ul>
+				{{range .Events}}
+			  	{{if .Today}}
+			  		<li{{if .Happening}} class="active"{{end}}><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+			  	{{end}}
+				{{end}}
+      </ul>
+
+			<h1>Upcoming events</h1>
+      <ul>
+				{{range .Events}}
+			  	{{if not .Today}}
+			  		<li><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+			  	{{end}}
+				{{end}}
+      </ul>
+	</div>
+</div>
 	</body>
 	</html>
 	`
@@ -116,18 +141,14 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		fmt.Println(err)
 	}
 
-	tmpl.Execute(w, reverseKudos())
-}
+	var viewKudos []Kudo
+	for i, x := len(kudos)-1, 0; i > 0 && x < 9; i-- {
+		viewKudos = append(viewKudos, kudos[i])
+		x++
+	}
+	pageData := pageView{Kudos: viewKudos, Events: getEvents()}
 
-func reverseKudos() <-chan Kudo {
-	ch := make(chan Kudo)
-	go func() {
-		for i := len(kudos) - 1; i > 0; i-- {
-			ch <- kudos[i]
-		}
-		close(ch)
-	}()
-	return ch
+	tmpl.Execute(w, pageData)
 }
 
 func getMemberFrom(r *http.Request) (*Member, error) {

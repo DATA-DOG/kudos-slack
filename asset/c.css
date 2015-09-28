@@ -1,5 +1,6 @@
 body {
-  background: url('sea.jpg') left top;
+  background: #6A6879;
+  overflow: hidden;
 }
 
 .note {
@@ -7,8 +8,8 @@ body {
   background-color: #4B83EE;
   height: 300px;
   width: 300px;
-  margin-left: 50px;
-  margin-top: 50px;
+  margin-left: 30px;
+  margin-top: 20px;
   position: relative;
   border-radius: 1px;
   box-shadow: -3px 3px 3px rgba(0,0,0,0.3);
@@ -78,6 +79,14 @@ body {
   background-size: contain;
 }
 
+.pin-left {
+  left: 1%;
+}
+
+.pin-right {
+  left: 97%;
+}
+
 .sad {
   background-image: url('sad.png');
   width: 250px;
@@ -86,4 +95,35 @@ body {
   position: absolute;
   bottom: -42px;
   opacity: 0.3;
+}
+
+.calendar {
+  background: url('c.png');
+  background-color: #FFF;
+  margin: 30px 30px 30px 0;
+  position: relative;
+  border-radius: 1px;
+  box-shadow: -3px 3px 3px rgba(0,0,0,0.3);
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 1.5em;
+  padding-bottom: 30px;
+}
+
+.calendar h1 {
+  padding: 30px
+}
+
+.calendar ul {
+  color: #000;
+  list-style: none;
+  padding: 0;
+}
+
+.calendar ul li {
+  font-size: 1.1em;
+  padding: 15px 30px;
+}
+
+.calendar ul li.active {
+  background-color: #8AC48B
 }
