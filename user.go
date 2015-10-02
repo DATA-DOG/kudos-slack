@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"gopkg.in/jmcvetta/napping.v1"
 )
@@ -38,27 +39,27 @@ func loadUsers() {
 
 	napping.Get("https://slack.com/api/users.list", reqParams, &userResponse, err)
 
-	fmt.Printf("Loaded %d users\n", len(userResponse.Members))
+	log.Printf("Loaded %d users\n", len(userResponse.Members))
 
 	users = userResponse.Members
 }
 
-func findMemberByTag(tag string) (*Member, error) {
+func findMemberByTag(tag string) (Member, error) {
 	for _, user := range users {
 		if user.Name == tag {
-			return &user, nil
+			return user, nil
 		}
 	}
 
-	return &Member{}, fmt.Errorf("Member with tag %s could not be found!", tag)
+	return Member{}, fmt.Errorf("Member with tag %s could not be found!", tag)
 }
 
-func findMemberByID(ID string) (*Member, error) {
+func findMemberByID(ID string) (Member, error) {
 	for _, user := range users {
 		if user.ID == ID {
-			return &user, nil
+			return user, nil
 		}
 	}
 
-	return &Member{}, fmt.Errorf("Member with ID %s could not be found!", ID)
+	return Member{}, fmt.Errorf("Member with ID %s could not be found!", ID)
 }

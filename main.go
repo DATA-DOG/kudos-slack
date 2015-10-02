@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -14,17 +15,23 @@ import (
 // Kudo main kudos
 type Kudo struct {
 	ID         int64
-	Kudo       string
-	MemberTo   *Member
-	MemberFrom *Member
-	LikeCount  int
+	Text       string
+	Original   string
+	MemberFrom Member
+	Recipients []Member
 	Value      int
 	Color      string
+	Date       time.Time
 }
 
 type pageView struct {
-	Kudos  []Kudo
+	Kudos  []kudoView
 	Events []event
+}
+
+type kudoView struct {
+	Item Kudo
+	Text []string
 }
 
 var kudos []Kudo
@@ -41,7 +48,7 @@ func main() {
 
 	router.ServeFiles("/asset/*filepath", http.Dir(config.AssetPath))
 
-	fmt.Print("Listening on port ", config.Port, "...")
+	log.Println("Listening on port", config.Port, "...")
 	log.Fatal(http.ListenAndServe(fmt.Sprint(":", config.Port), router))
 }
 
@@ -53,7 +60,7 @@ func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		return
 	}
 
-	command, target, extra, err := getCommandParams(r)
+	command, text, err := getCommandParams(r)
 	if err != nil {
 		printKudoUsage(w)
 		return
@@ -65,16 +72,14 @@ func handleKudoCmd(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 		if r.PostFormValue("command") == "/boo" {
 			value = -1
 		}
-		handleNewKudoCommand(w, memberFrom, target, extra, value)
-	case "like":
-		handleLikeCommand(w, memberFrom, target)
+		handleNewKudoCommand(w, memberFrom, text, value)
 	default:
 		printKudoUsage(w)
 	}
 }
 
 func printKudoUsage(w http.ResponseWriter) {
-	fmt.Fprint(w, "New kudo: `/kudos to @user reason`\nLike user latest kudo: `/kudos like @user`")
+	fmt.Fprint(w, "New kudo: `/kudos to @user1 [@user2, ...] message`")
 }
 
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -98,13 +103,13 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
   <div class="col-xs-7">
 	<div class="notes">
 	{{range .Kudos}}
-		<div class="note note-{{.Color}}">
+		<div class="note note-{{.Item.Color}}">
 			<div class="pin"></div>
-			{{if eq .Value -1}}
+			{{if eq .Item.Value -1}}
 		  	<div class="sad"></div>
 			{{end}}
-			<p>@{{.MemberTo.Name}},<br>{{.Kudo}}</p>
-			<span>@{{.MemberFrom.Name}}</span>
+			<p>{{range .Item.Recipients}}@{{.Name}}, {{end}}<br>{{range .Text}}{{.}}<br>{{end}}</p>
+			<span>@{{.Item.MemberFrom.Name}}</span>
 		</div>
 	{{end}}
 	</div>
@@ -141,9 +146,10 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		fmt.Println(err)
 	}
 
-	var viewKudos []Kudo
+	var viewKudos []kudoView
 	for i, x := len(kudos)-1, 0; i > 0 && x < 9; i-- {
-		viewKudos = append(viewKudos, kudos[i])
+		view := kudoView{Item: kudos[i], Text: strings.Split(kudos[i].Text, "\n")}
+		viewKudos = append(viewKudos, view)
 		x++
 	}
 	pageData := pageView{Kudos: viewKudos, Events: getEvents()}
@@ -151,7 +157,7 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	tmpl.Execute(w, pageData)
 }
 
-func getMemberFrom(r *http.Request) (*Member, error) {
+func getMemberFrom(r *http.Request) (Member, error) {
 	memberFromTag := r.PostFormValue("user_name")
 
 	var memberFrom, err = findMemberByTag(memberFromTag)
@@ -160,27 +166,27 @@ func getMemberFrom(r *http.Request) (*Member, error) {
 		memberFrom, err = findMemberByTag(memberFromTag)
 
 		if err != nil {
-			return &Member{}, fmt.Errorf("Could not find member %s", memberFromTag)
+			return Member{}, fmt.Errorf("Could not find member %s", memberFromTag)
 		}
 	}
 
 	return memberFrom, nil
 }
 
-func getCommandParams(r *http.Request) (string, string, string, error) {
+func getCommandParams(r *http.Request) (string, string, error) {
 	var text = r.PostFormValue("text")
 
-	textParts := strings.SplitN(text, " ", 3)
-	if len(textParts) < 2 {
-		return "", "", "", fmt.Errorf("Invalid number of parameters.")
+	textParts := strings.SplitN(text, " ", 2)
+	if len(textParts) < 1 {
+		return "", "", fmt.Errorf("Invalid number of parameters.")
 	}
 
-	command, target, extra := textParts[0], textParts[1], ""
-	if len(textParts) == 3 {
-		extra = textParts[2]
+	command, text := textParts[0], ""
+	if len(textParts) == 2 {
+		text = textParts[1]
 	}
 
-	return command, target, extra, nil
+	return command, text, nil
 }
 
 func randomColor() string {
