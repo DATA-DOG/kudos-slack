@@ -147,7 +147,7 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	var viewKudos []kudoView
-	for i, x := len(kudos)-1, 0; i > 0 && x < 9; i-- {
+	for i, x := len(kudos)-1, 0; i >= 0 && x < 9; i-- {
 		view := kudoView{Item: kudos[i], Text: strings.Split(kudos[i].Text, "\n")}
 		viewKudos = append(viewKudos, view)
 		x++

@@ -29,7 +29,7 @@ func parseKudoCommand(kudoText string) parsedKudoCommand {
 
 	lastMemberFound := exploded[lastIndex]
 	startOfMessage := strings.LastIndex(kudoText, lastMemberFound) + len(lastMemberFound) + 1
-	endOfMessage := len(kudoText) - 1
+	endOfMessage := len(kudoText)
 
 	if startOfMessage < endOfMessage {
 		parsed.Text = kudoText[startOfMessage:endOfMessage]
