@@ -147,10 +147,9 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	var viewKudos []kudoView
-	for i, x := len(kudos)-1, 0; i >= 0 && x < 9; i-- {
+	for i := 0; i < 9 && i < len(kudos); i++ {
 		view := kudoView{Item: kudos[i], Text: strings.Split(kudos[i].Text, "\n")}
 		viewKudos = append(viewKudos, view)
-		x++
 	}
 	pageData := pageView{Kudos: viewKudos, Events: getEvents()}
 

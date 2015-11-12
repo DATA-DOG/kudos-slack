@@ -26,7 +26,7 @@ func handleNewKudoCommand(w http.ResponseWriter, memberFrom Member, command stri
 	}
 
 	dbSaveKudo(&kudo)
-	kudos = append(kudos, kudo)
+	kudos = append([]Kudo{kudo}, kudos...)
 
 	text := "New kudo from <@" + memberFrom.ID + ">!\n>" + kudo.Text
 
