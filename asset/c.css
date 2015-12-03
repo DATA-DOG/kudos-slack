@@ -3,6 +3,14 @@ body {
   overflow: hidden;
 }
 
+.snowman {
+  position: fixed;
+  z-index: 4;
+  height: 300px;
+  bottom: -49px;
+  right: -5px;
+}
+
 .note {
   background: url('c.png');
   background-color: #4B83EE;
@@ -99,7 +107,7 @@ body {
 
 .calendar {
   background: url('c.png');
-  background-color: #FFF;
+  background-color: #304152;
   margin: 30px 30px 30px 0;
   position: relative;
   border-radius: 1px;
@@ -107,6 +115,11 @@ body {
   font-family: 'Droid Sans', sans-serif;
   font-size: 1.5em;
   padding-bottom: 30px;
+  color: white;
+}
+
+.text-muted {
+  color: #C3C3C3;
 }
 
 .calendar h1 {
@@ -122,6 +135,7 @@ body {
 .calendar ul li {
   font-size: 1.1em;
   padding: 15px 30px;
+  color: white;
 }
 
 .calendar ul li.active {

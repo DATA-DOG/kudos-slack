@@ -91,14 +91,25 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	<html>
 	<head>
   	<meta charset="utf-8">
-		<meta http-equiv="refresh" content="60">
+		<meta http-equiv="refresh" content="300">
 	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	  <link rel="stylesheet" href="/asset/c.css">
 	  <link href='https://fonts.googleapis.com/css?family=Patrick+Hand|Droid+Sans' rel='stylesheet' type='text/css'>
+		<script type="text/javascript" src="/asset/snowstorm-min.js"></script>
+		<script type="text/javascript">
+			snowStorm.snowColor = '#FBFDFF';
+			snowStorm.flakesMaxActive = 15;
+			snowStorm.flakesMax = 15;
+			snowStorm.animationInterval = 60;
+			snowStorm.followMouse = false;
+			snowStorm.useMeltEffect = false;
+
+		</script>
 	</head>
 	<body>
+	<img src="/asset/snowman.png" class="snowman">
 	<div class="row">
   <div class="col-xs-7">
 	<div class="notes">
