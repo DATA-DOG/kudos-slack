@@ -117,8 +117,8 @@ func getEvents() []event {
 			endDate, _ := time.Parse(time.RFC3339, i.End.DateTime)
 
 			var startDay = startDate.Format("02")
-			isToday = currentDate.Format("02") == startDay
-			happening = currentDate.After(startDate) && endDate.After(currentDate)
+			isToday = currentDate.Format("02") == startDay || currentDate.After(startDate)
+			happening = isToday && endDate.After(currentDate)
 
 			if startDay != endDate.Format("02") || !isToday {
 				var dateStart = startDate.Format("01-02")
@@ -135,8 +135,14 @@ func getEvents() []event {
 		} else {
 			startDate, _ := time.Parse("2006-01-02", i.Start.Date)
 			date = startDate.Format("01-02") + " (all day)"
-			isToday = i.Start.Date == currentDate.Format("2006-01-02")
+
+			if currentDate.After(startDate) {
+				isToday = true
+			} else {
+				isToday = i.Start.Date == currentDate.Format("2006-01-02")
+			}
 		}
+
 		compiledEvents = append(compiledEvents, event{Happening: happening, Date: date, Event: i, Today: isToday})
 	}
 

@@ -97,19 +97,41 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	  <link rel="stylesheet" href="/asset/c.css">
 	  <link href='https://fonts.googleapis.com/css?family=Patrick+Hand|Droid+Sans' rel='stylesheet' type='text/css'>
-		<script type="text/javascript" src="/asset/snowstorm-min.js"></script>
-		<script type="text/javascript">
-			snowStorm.snowColor = '#FBFDFF';
-			snowStorm.flakesMaxActive = 15;
-			snowStorm.flakesMax = 15;
-			snowStorm.animationInterval = 60;
-			snowStorm.followMouse = false;
-			snowStorm.useMeltEffect = false;
+		<style>
+@-webkit-keyframes snow
+  {
+  0%{background-position:0 0,0 0,0 0}
+  to{background-position:500px 1000px,400px 400px,300px 300px}}
 
-		</script>
+  @keyframes snow{0%{background-position:0 0,0 0,0 0}
+  to{background-position:500px 1000px,400px 400px,300px 300px}
+  }
+
+  </style>
 	</head>
 	<body>
-	<img src="/asset/snowman.png" class="snowman">
+	<!--<div style="
+	    position: fixed;
+	    width: 100%;
+	    height: 100%;
+	    -webkit-animation-name: snow;
+	    animation-name: snow;
+	    -webkit-animation-duration: 20s;
+	    animation-duration: 20s;
+	    -webkit-animation-timing-function: linear;
+	    animation-timing-function: linear;
+	    -webkit-animation-delay: 0;
+	    animation-delay: 0;
+	    -webkit-animation-iteration-count: infinite;
+	    animation-iteration-count: infinite;
+	    background-image: url(/asset/snowh.png),url(/asset/snow3q.png),url(/asset/snow2l.png);
+	    transform: translateZ(0);
+	    z-index: 10000000;
+	    /* background-color: red; */
+	    transform: translateZ(0);
+	"></div>
+
+	<img src="/asset/snowman.png" class="snowman">-->
 	<div class="row">
   <div class="col-xs-7">
 	<div class="notes">
