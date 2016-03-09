@@ -3,6 +3,23 @@ body {
   overflow: hidden;
 }
 
+body.easter {
+  background: #385400 url('https://free4kwallpapers.com/uploads/originals/2015/09/15/pet.jpg');
+  background-size: cover;
+  background-position: 450px 0px;
+  background-repeat: no-repeat;
+}
+
+body.easter .calendar {
+  background: rgba(48, 65, 82, 0.67);
+}
+
+body.easter .note
+ {
+  background-image: url('./egg.png');
+  background-size: cover;
+}
+
 .snowman {
   position: fixed;
   z-index: 4;
