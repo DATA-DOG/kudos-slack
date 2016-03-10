@@ -118,7 +118,7 @@ func getEvents() []event {
 
 			var startDay = startDate.Format("02")
 			isToday = currentDate.Format("02") == startDay || currentDate.After(startDate)
-			happening = isToday && endDate.After(currentDate)
+			happening = isToday && startDate.Before(currentDate) && endDate.After(currentDate)
 
 			if startDay != endDate.Format("02") || !isToday {
 				var dateStart = startDate.Format("01-02")
