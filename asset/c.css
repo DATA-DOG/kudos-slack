@@ -10,11 +10,19 @@ body.easter {
   background-repeat: no-repeat;
 }
 
+
+body.dd {
+  background: #385400 url('./background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
 body.win95 {
   background: #008080;
 }
 
-body.easter .calendar, body.win95 .calendar {
+body.dd .calendar, body.easter .calendar, body.win95 .calendar {
   background: rgba(48, 65, 82, 0.67);
 }
 
@@ -24,6 +32,11 @@ body.win95 .note
   background-size: cover;
 }
 
+body.dd .note
+ {
+  background-image: url('./sticker.png');
+  background-size: cover;
+}
 
 body.easter .note
  {
@@ -168,4 +181,8 @@ body.easter .note
 
 .calendar ul li.active {
   background-color: #8AC48B
+}
+
+.dd .calendar ul li.active {
+  background-color: #0073ae;
 }

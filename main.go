@@ -110,7 +110,7 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
   </style>
 	</head>
-	<body class="win95">
+	<body class="dd">
 	<!--<div style="
 	    position: fixed;
 	    width: 100%;
