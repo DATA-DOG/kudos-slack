@@ -93,7 +93,7 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
   	<meta charset="utf-8">
 		<meta http-equiv="refresh" content="300">
 	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <meta name="viewport" content="width=1920, initial-scale=1">
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	  <link rel="stylesheet" href="/asset/c.css">
 	  <link href='https://fonts.googleapis.com/css?family=Patrick+Hand|Droid+Sans' rel='stylesheet' type='text/css'>
@@ -109,7 +109,7 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
   </style>
 	</head>
-	<body class="easter">
+	<body class="win95">
 	<!--<div style="
 	    position: fixed;
 	    width: 100%;

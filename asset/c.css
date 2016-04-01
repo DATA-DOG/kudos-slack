@@ -10,9 +10,20 @@ body.easter {
   background-repeat: no-repeat;
 }
 
-body.easter .calendar {
+body.win95 {
+  background: #008080;
+}
+
+body.easter .calendar, body.win95 .calendar {
   background: rgba(48, 65, 82, 0.67);
 }
+
+body.win95 .note
+ {
+  background-image: url('./clouds.jpg');
+  background-size: cover;
+}
+
 
 body.easter .note
  {
