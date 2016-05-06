@@ -20,6 +20,7 @@ type Config struct {
 	CalendarID          string `yaml:"calendar_id"`
 	CalendarSecret      string `yaml:"calendar_secret"`
 	CalendarCredentials string `yaml:"calendar_credentials"`
+	TemplatesPath       string `yaml:"templates_path"`
 }
 
 var config Config

@@ -1,0 +1,41 @@
+{{ define "content" }}
+<div class="row">
+<div class="col-xs-7">
+<div class="notes">
+{{range .Kudos}}
+  <div class="note note-{{.Item.Color}}">
+    <div class="pin"></div>
+    {{if eq .Item.Value -1}}
+      <div class="sad"></div>
+    {{end}}
+    <p>{{range .Item.Recipients}}@{{.Name}}, {{end}}<br>{{range .Text}}{{.}}<br>{{end}}</p>
+    <span>@{{.Item.MemberFrom.Name}}</span>
+  </div>
+{{end}}
+</div>
+</div>
+<div class="col-xs-5">
+<div class="calendar">
+<div class="pin pin-left"></div>
+    <div class="pin pin-right"></div>
+    <h1>Happening today</h1>
+    <ul>
+      {{range .Events}}
+        {{if .Today}}
+          <li{{if .Happening}} class="active"{{end}}><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+        {{end}}
+      {{end}}
+    </ul>
+
+    <h1>Upcoming events</h1>
+    <ul>
+      {{range .Events}}
+        {{if not .Today}}
+          <li><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+        {{end}}
+      {{end}}
+    </ul>
+</div>
+</div>
+</div>
+{{ end }}
