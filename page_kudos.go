@@ -19,7 +19,7 @@ func loadKudosPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 		view := kudoView{Item: kudos[i], Text: strings.Split(kudos[i].Text, "\n")}
 		viewKudos = append(viewKudos, view)
 	}
-	pageData := pageView{Kudos: viewKudos, Events: getEvents()}
+	pageData := pageView{Kudos: viewKudos}
 
 	r.Header.Set("Content-Type", "text/html")
 	tmpl.ExecuteTemplate(w, "base.tmpl", pageData)

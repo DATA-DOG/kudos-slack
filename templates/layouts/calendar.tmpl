@@ -1,3 +1,30 @@
 {{ define "content" }}
-Calendar page
+<div class="row">
+<div class="col-xs-7">
+
+</div>
+<div class="col-xs-5">
+<div class="calendar">
+<div class="pin pin-left"></div>
+    <div class="pin pin-right"></div>
+    <h1>Happening today</h1>
+    <ul>
+      {{range .Events}}
+        {{if .Today}}
+          <li{{if .Happening}} class="active"{{end}}><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+        {{end}}
+      {{end}}
+    </ul>
+
+    <h1>Upcoming events</h1>
+    <ul>
+      {{range .Events}}
+        {{if not .Today}}
+          <li><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+        {{end}}
+      {{end}}
+    </ul>
+</div>
+</div>
+</div>
 {{ end }}
