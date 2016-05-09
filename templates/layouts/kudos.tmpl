@@ -14,8 +14,72 @@
 {{end}}
 </div>
 </div>
-<div class="col-xs-5">
-  <!-- Right side -->
+<div class="col-xs-5 statistics-container">
+  <h1>Kudos Leaderboard</h1>
+  <div class="statistics">
+    <div class="pin pin-left"></div>
+    <div class="pin pin-right"></div>
+    <h2>TOP Received</h2>
+    <div class="stats-list">
+    {{range .KudosGave}}
+      <div class="stats-list-row">
+          <div class="col-xs-5">{{.Position}}.
+            <div class="profile-box">
+              {{if .HasCrown}}
+                <img src="/asset/crown.svg" class="crown" />
+              {{end}}
+              <img src="{{.Member.Profile.Image192}}" class="profile-image" />
+            </div>
+            {{.Member.RealName}}</div>
+          <div class="col-xs-7">
+            <div class="row">
+              <div class="progress pull-left" style="width: {{.Prc}}%; margin-bottom: 0px; margin-top: 5px">
+                <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
+              </div>
+              <div class="pull-left pts">
+                {{.Pts}}
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+      </div>
+    {{end}}
+    </div>
+  </div>
+  <div class="statistics">
+    <div class="pin pin-left"></div>
+    <div class="pin pin-right"></div>
+    <h2>Distributor of largesse</h2>
+    <div class="stats-list">
+    {{range .KudosGave}}
+      <div class="stats-list-row">
+          <div class="col-xs-5">{{.Position}}.
+            <div class="profile-box">
+              {{if .HasCrown}}
+                <img src="/asset/crown.svg" class="crown" />
+              {{end}}
+              <img src="{{.Member.Profile.Image192}}" class="profile-image" />
+            </div>
+            {{.Member.RealName}}
+          </div>
+          <div class="col-xs-7">
+            <div class="row">
+              <div class="progress pull-left" style="width: {{.Prc}}%; margin-bottom: 0px; margin-top: 5px">
+                <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
+              </div>
+              <div class="pull-left pts">
+                {{.Pts}}
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+      </div>
+    {{end}}
+    </div>
+  </div>
+
 </div>
 </div>
 {{ end }}

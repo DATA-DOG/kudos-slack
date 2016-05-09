@@ -26,13 +26,7 @@ type Kudo struct {
 }
 
 type pageView struct {
-	Kudos  []kudoView
 	Events []event
-}
-
-type kudoView struct {
-	Item Kudo
-	Text []string
 }
 
 var kudos []Kudo

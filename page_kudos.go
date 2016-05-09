@@ -7,6 +7,26 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// Kudo main kudos
+type KudosStats struct {
+	Member    Member
+	Pts				int
+	Position  int
+	Prc			  float32
+	HasCrown  bool
+}
+
+type kudosView struct {
+	Item Kudo
+	Text []string
+}
+
+type kudosPageView struct {
+	Kudos		  		[]kudosView
+	KudosReceived []KudosStats
+	KudosGave			[]KudosStats
+}
+
 func loadKudosPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
   pageName := "kudos.tmpl"
 	tmpl, ok := templates[pageName]
@@ -14,12 +34,19 @@ func loadKudosPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 			fmt.Errorf("The template %s does not exist.", pageName)
 	}
 
-	var viewKudos []kudoView
+	var viewKudos []kudosView
 	for i := 0; i < 9 && i < len(kudos); i++ {
-		view := kudoView{Item: kudos[i], Text: strings.Split(kudos[i].Text, "\n")}
+		view := kudosView{Item: kudos[i], Text: strings.Split(kudos[i].Text, "\n")}
 		viewKudos = append(viewKudos, view)
 	}
-	pageData := pageView{Kudos: viewKudos}
+	var kudosReceived []KudosStats
+
+
+
+	pageData := kudosPageView{
+		Kudos: viewKudos,
+		KudosReceived: kudosReceived,
+		KudosGave: loadKudosGaveList()}
 
 	r.Header.Set("Content-Type", "text/html")
 	tmpl.ExecuteTemplate(w, "base.tmpl", pageData)

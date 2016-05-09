@@ -70,6 +70,40 @@ func loadKudos() {
 	}
 }
 
+func loadKudosGaveList() []KudosStats {
+
+	rows, err := db.Query(`
+			SELECT userFrom, count(id) as pts FROM kudos
+			GROUP by userFrom ORDER BY pts DESC
+			LIMIT 5`)
+	checkErr(err)
+	defer rows.Close()
+
+	var statsList []KudosStats
+	i := 1
+	var max float32 = 0
+	for rows.Next() {
+		var kudoStats KudosStats
+		var memberFrom string
+		var pts int
+		err = rows.Scan(&memberFrom, &pts)
+		checkErr(err)
+
+		if i == 1 {
+			max = float32(pts)
+		}
+		kudoStats.Member, _ = findMemberByID(memberFrom)
+		kudoStats.Pts = pts
+		kudoStats.Position = i
+		kudoStats.HasCrown = i == 1
+		kudoStats.Prc = float32(pts * 85) / max
+
+		i = i + 1
+		statsList = append(statsList, kudoStats)
+	}
+	return statsList
+}
+
 func checkErr(err error) {
 	if err != nil {
 		panic(err)
