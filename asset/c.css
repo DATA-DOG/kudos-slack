@@ -203,6 +203,15 @@ body.easter .note
   margin-bottom: 15px;
 }
 
+.stats-progress-column {
+  line-height: 40px;
+}
+
+.stats-progress-column .progress {
+  margin-bottom: 0px;
+  margin-top: 10px
+}
+
 .pts {
   padding-left: 10px;
 }

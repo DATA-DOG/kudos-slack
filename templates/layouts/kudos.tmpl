@@ -19,7 +19,7 @@
   <div class="statistics">
     <div class="pin pin-left"></div>
     <div class="pin pin-right"></div>
-    <h2>TOP Received</h2>
+    <h2>Meškiukai</h2>
     <div class="stats-list">
     {{range .KudosReceived}}
       <div class="stats-list-row">
@@ -32,9 +32,9 @@
             </div>
             {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
           </div>
-          <div class="col-xs-6">
+          <div class="col-xs-6 stats-progress-column">
             <div class="row">
-              <div class="progress pull-left" style="width: {{.Prc}}%; margin-bottom: 0px; margin-top: 5px">
+              <div class="progress pull-left" style="width: {{.Prc}}%;">
                 <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
               </div>
               <div class="pull-left pts">
@@ -51,7 +51,7 @@
   <div class="statistics">
     <div class="pin pin-left"></div>
     <div class="pin pin-right"></div>
-    <h2>Distributor of largesse</h2>
+    <h2>Bitutės</h2>
     <div class="stats-list">
     {{range .KudosGave}}
       <div class="stats-list-row">
@@ -64,9 +64,9 @@
             </div>
             {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
           </div>
-          <div class="col-xs-6">
+          <div class="col-xs-6 stats-progress-column">
             <div class="row">
-              <div class="progress pull-left" style="width: {{.Prc}}%; margin-bottom: 0px; margin-top: 5px">
+              <div class="progress pull-left" style="width: {{.Prc}}%;">
                 <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
               </div>
               <div class="pull-left pts">

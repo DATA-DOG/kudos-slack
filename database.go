@@ -75,7 +75,7 @@ func dbSaveKudo(kudo *Kudo) {
 		return
 	}
 
-	stmt, err := db.Prepare("INSERT INTO kudos (userFrom, kudo, message, value, date) VALUES (?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO kudos (userFrom, kudo, message, value, date) VALUES (?, ?, ?, ?, ?)")
 	checkErr(err)
 
 	res, err := stmt.Exec(kudo.MemberFrom.ID, kudo.Original, kudo.Text, kudo.Value, kudo.Date.Format(time.RFC3339))
@@ -83,6 +83,13 @@ func dbSaveKudo(kudo *Kudo) {
 
 	id, err := res.LastInsertId()
 	checkErr(err)
+
+	stmt2, err := db.Prepare("INSERT INTO kudos_receiver (userTo, kudos_id) VALUES (?, ?)")
+	checkErr(err)
+
+	for _, member := range kudo.Recipients {
+		stmt2.Exec(member.ID, id)
+	}
 
 	kudo.ID = id
 }
