@@ -26,9 +26,48 @@ func loadDatabase() {
 func createDatabase() {
 	log.Println("Creating database...")
 
-	sqlStmt := `CREATE TABLE IF NOT EXISTS kudos (id integer primary key, userFrom text, kudo text, value INTEGER DEFAULT 1, date text);`
-	_, err := db.Exec(sqlStmt)
+	sqlStmt1 := `CREATE TABLE IF NOT EXISTS kudos (id integer primary key, userFrom text, kudo text, message text, value INTEGER DEFAULT 1, date text);`
+	_, err1 := db.Exec(sqlStmt1)
+	checkErr(err1)
+
+	sqlStmt2 := `CREATE TABLE IF NOT EXISTS kudos_receiver (id integer primary key, userTo text, kudos_id INTEGER);`
+	_, err2 := db.Exec(sqlStmt2)
+	checkErr(err2)
+}
+
+// Remove data migration in the future.
+func migrateKudos() {
+	stmt1 := `ALTER TABLE kudos ADD COLUMN message text`
+	db.Exec(stmt1)
+
+	rows, err := db.Query("SELECT id, kudo FROM kudos ORDER BY id ASC")
 	checkErr(err)
+	defer rows.Close()
+
+	stmt2, err2 := db.Prepare("INSERT INTO kudos_receiver (userTo, kudos_id) VALUES (?, ?)")
+	checkErr(err2)
+	stmt3, err3 := db.Prepare("UPDATE kudos SET message = ? WHERE id = ?")
+	checkErr(err3)
+
+  var kudosList []Kudo
+	for rows.Next() {
+		var kudo Kudo
+		err = rows.Scan(&kudo.ID, &kudo.Text)
+		checkErr(err)
+		kudosList = append(kudosList, kudo)
+	}
+	rows.Close()
+
+	for _, element := range kudosList {
+		parsed := parseKudoCommand(element.Text)
+		log.Printf("Kudo #%d\n", element.ID)
+		stmt3.Exec(parsed.Text, element.ID)
+		for _, member := range parsed.Members {
+			log.Printf("Receiver #%s\n", member.ID)
+			stmt2.Exec(member.ID, element.ID)
+		}
+		log.Println("________")
+	}
 }
 
 func dbSaveKudo(kudo *Kudo) {
@@ -36,10 +75,10 @@ func dbSaveKudo(kudo *Kudo) {
 		return
 	}
 
-	stmt, err := db.Prepare("INSERT INTO kudos (userFrom, kudo, value, date) VALUES (?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO kudos (userFrom, kudo, message, value, date) VALUES (?, ?, ?, ?)")
 	checkErr(err)
 
-	res, err := stmt.Exec(kudo.MemberFrom.ID, kudo.Original, kudo.Value, kudo.Date.Format(time.RFC3339))
+	res, err := stmt.Exec(kudo.MemberFrom.ID, kudo.Original, kudo.Text, kudo.Value, kudo.Date.Format(time.RFC3339))
 	checkErr(err)
 
 	id, err := res.LastInsertId()

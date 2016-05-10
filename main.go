@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 	"path/filepath"
+	"os"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -37,6 +38,11 @@ func main() {
 	loadUsers()
 	loadDatabase()
 	loadTemplates()
+
+	// Remove in the future
+	if len(os.Args) > 2 && os.Args[2] == "migrateKudos" {
+		migrateKudos()
+	}
 
 	router := httprouter.New()
 	router.GET("/", loadKudosPage)
