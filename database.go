@@ -88,25 +88,45 @@ func dbSaveKudo(kudo *Kudo) {
 }
 
 func loadKudos() {
-	rows, err := db.Query("SELECT id, userFrom, kudo, value, date FROM kudos ORDER BY id DESC LIMIT 9")
+	rows, err := db.Query("SELECT id, userFrom, message, value, date FROM kudos ORDER BY id DESC LIMIT 9")
 	checkErr(err)
 	defer rows.Close()
 
 	for rows.Next() {
 		var kudo Kudo
-		var memberFrom, message, date string
-		err = rows.Scan(&kudo.ID, &memberFrom, &message, &kudo.Value, &date)
+		var memberFrom, date string
+		err = rows.Scan(&kudo.ID, &memberFrom, &kudo.Text, &kudo.Value, &date)
 		checkErr(err)
 
-		parsed := parseKudoCommand(message)
 		kudo.MemberFrom, _ = findMemberByID(memberFrom)
-		kudo.Text = parsed.Text
-		kudo.Recipients = parsed.Members
+		kudo.Recipients = loadKudosRecipients(kudo.ID)
 		kudo.Color = randomColor()
 		kudo.Date, _ = time.Parse(time.RFC3339, date)
-
 		kudos = append(kudos, kudo)
 	}
+}
+
+func loadKudosRecipients(kudoId int64) []Member {
+		stmt, err := db.Prepare("SELECT userTo FROM kudos_receiver WHERE kudos_id = ?")
+		checkErr(err)
+		memberRows, err := stmt.Query(kudoId)
+		checkErr(err)
+		defer memberRows.Close()
+
+		var members []Member
+		for memberRows.Next() {
+			var memberToId string
+			err = memberRows.Scan(&memberToId)
+			checkErr(err)
+
+			memberTo, err := findMemberByID(memberToId)
+			if err != nil {
+				log.Printf("Invalid user provided: #%s\n", memberToId)
+			} else {
+				members = append(members, memberTo)
+			}
+		}
+		return members
 }
 
 func loadKudosGaveList() []KudosStats {
@@ -114,7 +134,36 @@ func loadKudosGaveList() []KudosStats {
 	rows, err := db.Query(`
 			SELECT userFrom, count(id) as pts FROM kudos
 			GROUP by userFrom ORDER BY pts DESC
-			LIMIT 5`)
+			LIMIT 5
+			`)
+	checkErr(err)
+	defer rows.Close()
+
+		var statsList []KudosStats
+		i := 1
+		var max float32 = 0
+		for rows.Next() {
+			var memberFrom string
+			var pts int
+			err = rows.Scan(&memberFrom, &pts)
+			checkErr(err)
+			if i == 1 {
+				max = float32(pts)
+			}
+			statsList = append(statsList, generateStatsResult(memberFrom, pts, i, max))
+			i = i + 1
+		}
+		return statsList
+}
+
+func loadKudosReceivedList() []KudosStats {
+
+	rows, err := db.Query(`
+			SELECT userTo, SUM(value) as pts FROM kudos ku
+			INNER JOIN kudos_receiver kr ON kr.kudos_id = ku.id
+			GROUP by userTo ORDER BY pts DESC
+			LIMIT 5
+			`)
 	checkErr(err)
 	defer rows.Close()
 
@@ -122,25 +171,33 @@ func loadKudosGaveList() []KudosStats {
 	i := 1
 	var max float32 = 0
 	for rows.Next() {
-		var kudoStats KudosStats
 		var memberFrom string
 		var pts int
 		err = rows.Scan(&memberFrom, &pts)
 		checkErr(err)
-
 		if i == 1 {
 			max = float32(pts)
 		}
-		kudoStats.Member, _ = findMemberByID(memberFrom)
-		kudoStats.Pts = pts
-		kudoStats.Position = i
-		kudoStats.HasCrown = i == 1
-		kudoStats.Prc = float32(pts * 85) / max
-
+		statsList = append(statsList, generateStatsResult(memberFrom, pts, i, max))
 		i = i + 1
-		statsList = append(statsList, kudoStats)
 	}
 	return statsList
+}
+
+func generateStatsResult(memberFrom string, pts int, i int, max float32) KudosStats {
+
+	prc := float32(pts * 85) / max
+	if prc < 0 {
+		prc = 0
+	}
+	var kudoStats KudosStats
+	kudoStats.Member, _ = findMemberByID(memberFrom)
+	kudoStats.Pts = pts
+	kudoStats.Position = i
+	kudoStats.HasCrown = i == 1
+	kudoStats.Prc = prc
+
+	return kudoStats
 }
 
 func checkErr(err error) {

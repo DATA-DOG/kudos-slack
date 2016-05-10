@@ -39,13 +39,10 @@ func loadKudosPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 		view := kudosView{Item: kudos[i], Text: strings.Split(kudos[i].Text, "\n")}
 		viewKudos = append(viewKudos, view)
 	}
-	var kudosReceived []KudosStats
-
-
 
 	pageData := kudosPageView{
 		Kudos: viewKudos,
-		KudosReceived: kudosReceived,
+		KudosReceived: loadKudosReceivedList(),
 		KudosGave: loadKudosGaveList()}
 
 	r.Header.Set("Content-Type", "text/html")

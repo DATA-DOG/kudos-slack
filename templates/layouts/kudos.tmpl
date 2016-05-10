@@ -21,17 +21,18 @@
     <div class="pin pin-right"></div>
     <h2>TOP Received</h2>
     <div class="stats-list">
-    {{range .KudosGave}}
+    {{range .KudosReceived}}
       <div class="stats-list-row">
-          <div class="col-xs-5">{{.Position}}.
+          <div class="col-xs-6">{{.Position}}.
             <div class="profile-box">
               {{if .HasCrown}}
                 <img src="/asset/crown.svg" class="crown" />
               {{end}}
               <img src="{{.Member.Profile.Image192}}" class="profile-image" />
             </div>
-            {{.Member.RealName}}</div>
-          <div class="col-xs-7">
+            {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
+          </div>
+          <div class="col-xs-6">
             <div class="row">
               <div class="progress pull-left" style="width: {{.Prc}}%; margin-bottom: 0px; margin-top: 5px">
                 <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
@@ -54,16 +55,16 @@
     <div class="stats-list">
     {{range .KudosGave}}
       <div class="stats-list-row">
-          <div class="col-xs-5">{{.Position}}.
+          <div class="col-xs-6">{{.Position}}.
             <div class="profile-box">
               {{if .HasCrown}}
                 <img src="/asset/crown.svg" class="crown" />
               {{end}}
               <img src="{{.Member.Profile.Image192}}" class="profile-image" />
             </div>
-            {{.Member.RealName}}
+            {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
           </div>
-          <div class="col-xs-7">
+          <div class="col-xs-6">
             <div class="row">
               <div class="progress pull-left" style="width: {{.Prc}}%; margin-bottom: 0px; margin-top: 5px">
                 <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
