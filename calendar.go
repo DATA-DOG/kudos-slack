@@ -148,3 +148,75 @@ func getEvents() []event {
 
 	return compiledEvents
 }
+
+func getCalendarEvents() []event {
+	ctx := context.Background()
+
+	b, err := ioutil.ReadFile(config.CalendarSecret)
+	if err != nil {
+		log.Fatalf("Unable to read client secret file: %v", err)
+	}
+
+	calendarConfig, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
+	if err != nil {
+		log.Fatalf("Unable to parse client secret file to config: %v", err)
+	}
+	client := getClient(ctx, calendarConfig)
+
+	srv, err := calendar.New(client)
+	if err != nil {
+		log.Fatalf("Unable to retrieve calendar Client %v", err)
+	}
+
+	t := time.Now().Format(time.RFC3339)
+	events, err := srv.Events.List(config.CalendarID).ShowDeleted(false).SingleEvents(true).TimeMin(t).MaxResults(10).OrderBy("startTime").Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve next ten of the user's events. %v", err)
+	}
+
+	var compiledEvents []event
+
+	var currentDate = time.Now()
+
+	for _, i := range events.Items {
+		var date string
+		var happening bool
+		var isToday bool
+		// If the DateTime is an empty string the Event is an all-day Event.
+		// So only Date is available.
+		if i.Start.DateTime != "" {
+			startDate, _ := time.Parse(time.RFC3339, i.Start.DateTime)
+			endDate, _ := time.Parse(time.RFC3339, i.End.DateTime)
+
+			var startDay = startDate.Format("02")
+			isToday = currentDate.Format("02") == startDay || currentDate.After(startDate)
+			happening = isToday && startDate.Before(currentDate) && endDate.After(currentDate)
+
+			if startDay != endDate.Format("02") || !isToday {
+				var dateStart = startDate.Format("01-02")
+				var dateEnd = endDate.Format("01-02")
+
+				if dateStart == dateEnd {
+					date = dateStart + " " + startDate.Format("15:04") + "-" + endDate.Format("15:04")
+				} else {
+					date = startDate.Format("01-02 15:04") + "-" + endDate.Format("01-02 15:04")
+				}
+			} else {
+				date = startDate.Format("15:04") + "-" + endDate.Format("15:04")
+			}
+		} else {
+			startDate, _ := time.Parse("2006-01-02", i.Start.Date)
+			date = startDate.Format("01-02") + " (all day)"
+
+			if currentDate.After(startDate) {
+				isToday = true
+			} else {
+				isToday = i.Start.Date == currentDate.Format("2006-01-02")
+			}
+		}
+
+		compiledEvents = append(compiledEvents, event{Date: date, Event: i})
+	}
+
+	return compiledEvents
+}
