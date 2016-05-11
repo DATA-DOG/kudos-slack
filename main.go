@@ -26,10 +26,6 @@ type Kudo struct {
 	Date       time.Time
 }
 
-type pageView struct {
-	Events []event
-}
-
 var kudos []Kudo
 var templates map[string]*template.Template
 

@@ -18,6 +18,7 @@ type Config struct {
 	SlackCommandToken   string `yaml:"slack_command_token"`
 	AssetPath           string `yaml:"asset_path"`
 	CalendarID          string `yaml:"calendar_id"`
+	FullCalendarID      string `yaml:"full_calendar_id"`
 	CalendarSecret      string `yaml:"calendar_secret"`
 	CalendarCredentials string `yaml:"calendar_credentials"`
 	TemplatesPath       string `yaml:"templates_path"`

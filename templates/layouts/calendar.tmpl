@@ -1,3 +1,6 @@
+{{ define "head" }}
+<meta http-equiv="refresh" content="120;/">
+{{ end }}
 {{ define "content" }}
 <div class="row">
 <div class="col-xs-7">
@@ -45,17 +48,12 @@
 				editable: false,
 				eventLimit: true, // allow "more" link when too many events
 				events: [
-          {{range .Events}}
+          {{range .CalendarEvents}}
   					{
   						title: {{.Event.Summary}},
   						start: {{.Date}}
   					},
           {{end}}
-					{
-						title: 'Click for Google',
-						url: 'http://google.com/',
-						start: '2016-05-28'
-					}
 				]
 			});
 		}
@@ -77,9 +75,11 @@
     .fc-more {
         color: #FFF;
     }
+    .fc-day.fc-today {
+        background: #FFEF81 !important;
+    }
     .fc-today {
-        background: #2B6690 !important;
-        border-color: rgb(221, 221, 221) !important;
+      color: #000;
     }
     .fc-title {
         text-transform: uppercase;
@@ -91,6 +91,12 @@
     .fc-content {
         white-space: normal !important;
         font-size: 14px;
+    }
+    .fc-day.fc-sat, .fc-day.fc-sun {
+        background: rgba(141, 156, 158, 0.6)
+    }
+    .fc-day.fc-other-month {
+      background: rgba(76, 76, 76, 0.53) !important;
     }
 </style>
 {{ end }}
