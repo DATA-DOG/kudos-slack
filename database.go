@@ -17,10 +17,6 @@ func loadDatabase() {
 	db = conn
 
 	createDatabase()
-
-	log.Println("Loading database...")
-
-	loadKudos()
 }
 
 func createDatabase() {

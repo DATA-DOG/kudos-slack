@@ -40,6 +40,9 @@ func main() {
 		migrateKudos()
 	}
 
+	log.Println("Loading database...")
+	loadKudos()
+
 	router := httprouter.New()
 	router.GET("/", loadKudosPage)
 	router.GET("/calendar", loadCalendarPage)
