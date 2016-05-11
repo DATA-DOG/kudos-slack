@@ -1,0 +1,89 @@
+{{ define "head" }}
+<meta http-equiv="refresh" content="30;/calendar">
+{{ end }}
+{{ define "content" }}
+<div class="row">
+<div class="col-xs-7">
+<div class="notes">
+{{range .Kudos}}
+  <div class="note note-{{.Item.Color}}">
+    <div class="pin"></div>
+    {{if eq .Item.Value -1}}
+      <div class="sad"></div>
+    {{end}}
+    <p>{{range .Item.Recipients}}@{{.Name}}, {{end}}<br>{{range .Text}}{{.}}<br>{{end}}</p>
+    <span>@{{.Item.MemberFrom.Name}}</span>
+  </div>
+{{end}}
+</div>
+</div>
+<div class="col-xs-5 statistics-container">
+  <h1>Kudos Leaderboard</h1>
+  <div class="statistics">
+    <div class="pin pin-left"></div>
+    <div class="pin pin-right"></div>
+    <h2>Meškiukai</h2>
+    <div class="stats-list">
+    {{range .KudosReceived}}
+      <div class="stats-list-row">
+          <div class="col-xs-6">{{.Position}}.
+            <div class="profile-box">
+              {{if .HasCrown}}
+                <img src="/asset/crown.svg" class="crown" />
+              {{end}}
+              <img src="{{.Member.Profile.Image192}}" class="profile-image" />
+            </div>
+            {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
+          </div>
+          <div class="col-xs-6 stats-progress-column">
+            <div class="row">
+              <div class="progress pull-left" style="width: {{.Prc}}%;">
+                <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
+              </div>
+              <div class="pull-left pts">
+                {{.Pts}}
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+      </div>
+    {{end}}
+    </div>
+  </div>
+  <div class="statistics">
+    <div class="pin pin-left"></div>
+    <div class="pin pin-right"></div>
+    <h2>Bitutės</h2>
+    <div class="stats-list">
+    {{range .KudosGave}}
+      <div class="stats-list-row">
+          <div class="col-xs-6">{{.Position}}.
+            <div class="profile-box">
+              {{if .HasCrown}}
+                <img src="/asset/crown.svg" class="crown" />
+              {{end}}
+              <img src="{{.Member.Profile.Image192}}" class="profile-image" />
+            </div>
+            {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
+          </div>
+          <div class="col-xs-6 stats-progress-column">
+            <div class="row">
+              <div class="progress pull-left" style="width: {{.Prc}}%;">
+                <div class="progress-bar progress-bar-yellow" role="progressbar" style="width: 100%"></div>
+              </div>
+              <div class="pull-left pts">
+                {{.Pts}}
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+      </div>
+    {{end}}
+    </div>
+  </div>
+
+</div>
+</div>
+{{ end }}

@@ -1,0 +1,105 @@
+{{ define "head" }}
+<meta http-equiv="refresh" content="30;/">
+{{ end }}
+{{ define "content" }}
+<div class="row">
+<div class="col-xs-7">
+    <div id='calendar' class="calendar">
+        <div class="pin pin-left"></div>
+        <div class="pin pin-right"></div>
+    </div>
+</div>
+<div class="col-xs-5">
+<div class="calendar">
+<div class="pin pin-left"></div>
+    <div class="pin pin-right"></div>
+    <h1>Happening today</h1>
+    <ul>
+      {{range .Events}}
+        {{if .Today}}
+          <li{{if .Happening}} class="active"{{end}}><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+        {{end}}
+      {{end}}
+    </ul>
+
+    <h1>Upcoming events</h1>
+    <ul>
+      {{range .Events}}
+        {{if not .Today}}
+          <li><span class="text-muted">{{.Date}}</span> {{.Event.Summary}}</li>
+        {{end}}
+      {{end}}
+    </ul>
+</div>
+</div>
+</div>
+<script>
+	$(document).ready(function() {
+		function renderCalendar() {
+			$('#calendar').fullCalendar({
+				header: {
+					left: '',
+					center: 'title',
+					right: ''
+				},
+				lang: 'en-gb',
+				buttonIcons: false, // show the prev/next text
+				weekNumbers: false,
+				editable: false,
+				eventLimit: true, // allow "more" link when too many events
+				events: [
+          {{range .CalendarEvents}}
+  					{
+  						title: {{.Event.Summary}},
+  						start: {{.Date}}
+  					},
+          {{end}}
+				]
+			});
+		}
+
+		renderCalendar();
+	});
+</script>
+<style>
+    .calendar h2 {
+        padding-top: 30px;
+    }
+    .calendar .fc-view {
+        padding: 30px;
+    }
+    #calendar {
+        margin-left: 30px;
+        font-family: 'Droid Sans', sans-serif;
+    }
+    .fc-more {
+        color: #FFF;
+    }
+    .fc-day.fc-today {
+        background: #FFEF81 !important;
+    }
+    .fc-today {
+      color: #000;
+    }
+    .fc-title {
+        text-transform: uppercase;
+    }
+    .fc-event {
+        background-color: #666b6e !important;
+        border-color: #666b6e !important;
+    }
+    .fc-content {
+        white-space: normal !important;
+        font-size: 14px;
+    }
+    .fc-day.fc-sat, .fc-day.fc-sun {
+        background: rgba(141, 156, 158, 0.6)
+    }
+    .fc-day.fc-other-month {
+      background: rgba(76, 76, 76, 0.53) !important;
+    }
+    .fc td, .fc th {
+        border-width: 2px;
+    }
+</style>
+{{ end }}

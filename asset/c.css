@@ -26,6 +26,10 @@ body.dd .calendar, body.easter .calendar, body.win95 .calendar {
   background: rgba(48, 65, 82, 0.67);
 }
 
+body.dd .statistics, body.easter .statistics, body.win95 .statistics {
+  background: rgba(48, 65, 82, 0.67);
+}
+
 body.win95 .note
  {
   background-image: url('./clouds.jpg');
@@ -146,14 +150,14 @@ body.easter .note
   opacity: 0.3;
 }
 
-.calendar {
+.calendar, .statistics {
   background: url('c.png');
   background-color: #304152;
   margin: 30px 30px 30px 0;
   position: relative;
   border-radius: 1px;
   box-shadow: -3px 3px 3px rgba(0,0,0,0.3);
-  font-family: 'Droid Sans', sans-serif;
+  font-family: 'Ubuntu', 'Droid Sans', sans-serif;
   font-size: 1.5em;
   padding-bottom: 30px;
   color: white;
@@ -185,4 +189,57 @@ body.easter .note
 
 .dd .calendar ul li.active {
   background-color: #0073ae;
+}
+
+.statistics h2 {
+  padding: 35px 0 20px 30px;
+}
+
+.stats-list {
+  padding: 0px 10px;
+}
+
+.stats-list-row {
+  margin-bottom: 15px;
+}
+
+.stats-progress-column {
+  line-height: 40px;
+}
+
+.stats-progress-column .progress {
+  margin-bottom: 0px;
+  margin-top: 10px
+}
+
+.pts {
+  padding-left: 10px;
+}
+
+.progress-bar-yellow {
+  background-color: #FFEF81;
+}
+
+.statistics-container {
+  font-family: 'Ubuntu', 'Droid Sans', sans-serif;
+}
+
+.statistics-container h1 {
+  color: #FFFFFF;
+}
+
+.profile-box {
+    position: relative;
+    display: inline-block;
+}
+.profile-box .crown {
+    top: -22px;
+    position: absolute;
+    width: 25px;
+    left: 12px;
+}
+.profile-box .profile-image {
+  border-radius: 5px;
+  width: 40px;
+  margin: 0 5px;
 }

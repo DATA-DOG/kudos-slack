@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=1920">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/asset/c.css">
+  <link rel="stylesheet" href="/asset/fullcalendar.min.css">
+  <script src="/asset/moment.min.js"></script>
+  <script src="/asset/jquery.min.js"></script>
+  <script src="/asset/fullcalendar.min.js"></script>
+  <script src="/asset/lang-all.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Patrick+Hand|Droid+Sans|Ubuntu' rel='stylesheet' type='text/css'>
+  <style>
+@-webkit-keyframes snow
+{
+0%{background-position:0 0,0 0,0 0}
+to{background-position:500px 1000px,400px 400px,300px 300px}}
+
+@keyframes snow{0%{background-position:0 0,0 0,0 0}
+to{background-position:500px 1000px,400px 400px,300px 300px}
+}
+</style>
+  {{ template "head" . }}
+</head>
+<body class="dd">
+<!--<div style="
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    -webkit-animation-name: snow;
+    animation-name: snow;
+    -webkit-animation-duration: 20s;
+    animation-duration: 20s;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-delay: 0;
+    animation-delay: 0;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    background-image: url(/asset/snowh.png),url(/asset/snow3q.png),url(/asset/snow2l.png);
+    transform: translateZ(0);
+    z-index: 10000000;
+    /* background-color: red; */
+    transform: translateZ(0);
+"></div>
+
+<img src="/asset/snowman.png" class="snowman">-->
+{{ template "content" . }}
+
+</body>
+</html>

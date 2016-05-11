@@ -148,3 +148,45 @@ func getEvents() []event {
 
 	return compiledEvents
 }
+
+func getCalendarEvents() []event {
+	ctx := context.Background()
+
+	b, err := ioutil.ReadFile(config.CalendarSecret)
+	if err != nil {
+		log.Fatalf("Unable to read client secret file: %v", err)
+	}
+
+	calendarConfig, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
+	if err != nil {
+		log.Fatalf("Unable to parse client secret file to config: %v", err)
+	}
+	client := getClient(ctx, calendarConfig)
+
+	srv, err := calendar.New(client)
+	if err != nil {
+		log.Fatalf("Unable to retrieve calendar Client %v", err)
+	}
+
+	t := time.Now().Format(time.RFC3339)
+	events, err := srv.Events.List(config.FullCalendarID).ShowDeleted(false).SingleEvents(true).TimeMin(t).MaxResults(10).OrderBy("startTime").Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve next ten of the user's events. %v", err)
+	}
+
+	var compiledEvents []event
+	for _, i := range events.Items {
+		var date string
+		// If the DateTime is an empty string the Event is an all-day Event.
+		// So only Date is available.
+		if i.Start.DateTime != "" {
+			startDate, _ := time.Parse(time.RFC3339, i.Start.DateTime)
+			date = startDate.Format("2006-01-02")
+		} else {
+			startDate, _ := time.Parse("2006-01-02", i.Start.Date)
+			date = startDate.Format("2006-01-02")
+		}
+		compiledEvents = append(compiledEvents, event{Date: date, Event: i})
+	}
+	return compiledEvents
+}

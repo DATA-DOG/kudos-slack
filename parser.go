@@ -18,7 +18,9 @@ func parseKudoCommand(kudoText string) parsedKudoCommand {
 	exploded := strings.Split(kudoText, " ")
 
 	for index, target := range exploded {
-		member, err := findMemberByTag(strings.TrimLeft(target, "@"))
+		targetStr := strings.TrimLeft(target, "@")
+		targetStr = strings.Replace(targetStr, ",", "", -1)
+		member, err := findMemberByTag(targetStr)
 		if err != nil {
 			continue
 		}
