@@ -18,6 +18,7 @@ import (
 type event struct {
 	Happening bool
 	Date      string
+	EndDate   string
 	Event     *calendar.Event
 	Today     bool
 }
@@ -29,6 +30,17 @@ func getClient(ctx context.Context, authConfig *oauth2.Config) *http.Client {
 	if err != nil {
 		tok = getTokenFromWeb(authConfig)
 		saveToken(config.CalendarCredentials, tok)
+	}
+	return authConfig.Client(ctx, tok)
+}
+
+// getClient uses a Context and Config to retrieve a Token
+// then generate a Client. It returns the generated Client.
+func getSheetClient(ctx context.Context, authConfig *oauth2.Config) *http.Client {
+	tok, err := tokenFromFile(config.SheetCredentials)
+	if err != nil {
+		tok = getTokenFromWeb(authConfig)
+		saveToken(config.SheetCredentials, tok)
 	}
 	return authConfig.Client(ctx, tok)
 }
@@ -169,24 +181,28 @@ func getCalendarEvents() []event {
 	}
 
 	t := time.Now().Format(time.RFC3339)
-	events, err := srv.Events.List(config.FullCalendarID).ShowDeleted(false).SingleEvents(true).TimeMin(t).MaxResults(10).OrderBy("startTime").Do()
+	events, err := srv.Events.List(config.FullCalendarID).ShowDeleted(false).SingleEvents(true).TimeMin(t).MaxResults(30).OrderBy("startTime").Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve next ten of the user's events. %v", err)
 	}
 
 	var compiledEvents []event
 	for _, i := range events.Items {
-		var date string
+		var dateStart, dateEnd string
 		// If the DateTime is an empty string the Event is an all-day Event.
 		// So only Date is available.
 		if i.Start.DateTime != "" {
 			startDate, _ := time.Parse(time.RFC3339, i.Start.DateTime)
-			date = startDate.Format("2006-01-02")
+			endDate, _ := time.Parse(time.RFC3339, i.End.DateTime)
+			dateStart = startDate.Format("2006-01-02")
+			dateEnd = endDate.Format("2006-01-02")
 		} else {
 			startDate, _ := time.Parse("2006-01-02", i.Start.Date)
-			date = startDate.Format("2006-01-02")
+			endDate, _ := time.Parse("2006-01-02", i.End.Date)
+			dateStart = startDate.Format("2006-01-02")
+			dateEnd = endDate.Format("2006-01-02")
 		}
-		compiledEvents = append(compiledEvents, event{Date: date, Event: i})
+		compiledEvents = append(compiledEvents, event{Date: dateStart, EndDate: dateEnd, Event: i})
 	}
 	return compiledEvents
 }

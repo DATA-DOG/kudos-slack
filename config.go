@@ -21,7 +21,9 @@ type Config struct {
 	FullCalendarID      string `yaml:"full_calendar_id"`
 	CalendarSecret      string `yaml:"calendar_secret"`
 	CalendarCredentials string `yaml:"calendar_credentials"`
+	SheetCredentials    string `yaml:"sheet_credentials"`
 	TemplatesPath       string `yaml:"templates_path"`
+	StatisticsSheetId		string `yaml:"statistics_sheet_id"`
 }
 
 var config Config

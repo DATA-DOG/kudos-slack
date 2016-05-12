@@ -45,6 +45,6 @@ func loadKudosPage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 		KudosReceived: loadKudosReceivedList(),
 		KudosGave: loadKudosGaveList()}
 
-	r.Header.Set("Content-Type", "text/html")
+	r.Header.Set("Content-Type", "text/html; charset=utf-8")
 	tmpl.ExecuteTemplate(w, "base.tmpl", pageData)
 }

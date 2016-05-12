@@ -19,6 +19,6 @@ func loadCalendarPage(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 
 	pageData := calendarPageView{CalendarEvents: getCalendarEvents(), Events: getEvents()}
 
-	r.Header.Set("Content-Type", "text/html")
+	r.Header.Set("Content-Type", "text/html; charset=utf-8")
 	tmpl.ExecuteTemplate(w, "base.tmpl", pageData)
 }

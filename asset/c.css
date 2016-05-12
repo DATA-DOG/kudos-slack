@@ -22,11 +22,7 @@ body.win95 {
   background: #008080;
 }
 
-body.dd .calendar, body.easter .calendar, body.win95 .calendar {
-  background: rgba(48, 65, 82, 0.67);
-}
-
-body.dd .statistics, body.easter .statistics, body.win95 .statistics {
+body.dd .content-box, body.easter .content-box, body.win95 .content-box {
   background: rgba(48, 65, 82, 0.67);
 }
 
@@ -150,17 +146,25 @@ body.easter .note
   opacity: 0.3;
 }
 
-.calendar, .statistics {
+.content-box {
   background: url('c.png');
   background-color: #304152;
   margin: 30px 30px 30px 0;
   position: relative;
   border-radius: 1px;
   box-shadow: -3px 3px 3px rgba(0,0,0,0.3);
-  font-family: 'Ubuntu', 'Droid Sans', sans-serif;
+  font-family: 'Arial', 'Droid Sans', sans-serif;
   font-size: 1.5em;
   padding-bottom: 30px;
   color: white;
+}
+
+.content-box.left-box {
+  margin: 30px 0 30px 30px;
+}
+
+.content-box h2 {
+  padding: 35px 0 20px 30px;
 }
 
 .text-muted {
@@ -191,10 +195,6 @@ body.easter .note
   background-color: #0073ae;
 }
 
-.statistics h2 {
-  padding: 35px 0 20px 30px;
-}
-
 .stats-list {
   padding: 0px 10px;
 }
@@ -221,7 +221,7 @@ body.easter .note
 }
 
 .statistics-container {
-  font-family: 'Ubuntu', 'Droid Sans', sans-serif;
+  font-family: 'Arial', 'Droid Sans', sans-serif;
 }
 
 .statistics-container h1 {
@@ -242,4 +242,21 @@ body.easter .note
   border-radius: 5px;
   width: 40px;
   margin: 0 5px;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/asset/fonts/ubuntu_ext.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/asset/fonts/ubuntu.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }

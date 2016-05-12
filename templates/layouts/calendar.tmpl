@@ -1,16 +1,16 @@
 {{ define "head" }}
-<meta http-equiv="refresh" content="30;/">
+<meta http-equiv="refresh" content="30;/statistics">
 {{ end }}
 {{ define "content" }}
 <div class="row">
 <div class="col-xs-7">
-    <div id='calendar' class="calendar">
+    <div id='calendar' class="content-box calendar">
         <div class="pin pin-left"></div>
         <div class="pin pin-right"></div>
     </div>
 </div>
 <div class="col-xs-5">
-<div class="calendar">
+<div class="content-box calendar">
 <div class="pin pin-left"></div>
     <div class="pin pin-right"></div>
     <h1>Happening today</h1>
@@ -51,7 +51,8 @@
           {{range .CalendarEvents}}
   					{
   						title: {{.Event.Summary}},
-  						start: {{.Date}}
+  						start: {{.Date}},
+              end: {{.EndDate}}
   					},
           {{end}}
 				]
