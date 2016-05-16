@@ -4,6 +4,7 @@ import (
     "io/ioutil"
     "log"
     "strconv"
+    "time"
 
     "golang.org/x/net/context"
   	"golang.org/x/oauth2/google"
@@ -28,6 +29,8 @@ type Statistics struct {
   BillableStatistics BillableStatistics
   DeadlineStatistics []DeadlineStatistics
 }
+
+var lastUpdatedHour = 0
 
 func getStatistics() Statistics {
     ctx := context.Background()
@@ -80,6 +83,17 @@ func getStatistics() Statistics {
         deadlineStatistics = append(deadlineStatistics, deadline)
     }
     statistics.DeadlineStatistics = deadlineStatistics
+
+    t := time.Now()
+    // Must synchronize spreadsheet to get new calculated values
+    if lastUpdatedHour != t.Hour() {
+      log.Println("Updating spreadsheets...")
+      ws1.Rows[0][0].Update("Date")
+      ws1.Synchronize()
+      ws2.Rows[0][0].Update("Project")
+      ws2.Synchronize()
+      lastUpdatedHour = t.Hour()
+    }
 
     return statistics
 }
