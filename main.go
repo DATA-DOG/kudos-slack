@@ -46,7 +46,6 @@ func main() {
 	router := httprouter.New()
 	router.GET("/", loadKudosPage)
 	router.GET("/calendar", loadCalendarPage)
-	router.GET("/statistics", loadStatisticsPage)
 	router.POST("/kudo", handleKudoCmd)
 	router.POST("/boo", handleKudoCmd)
 
