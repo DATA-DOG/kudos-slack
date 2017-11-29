@@ -46,6 +46,8 @@ func main() {
 	router := httprouter.New()
 	router.GET("/", loadKudosPage)
 	router.GET("/calendar", loadCalendarPage)
+	router.GET("/anniversaries", loadAnniversariesPage)
+	router.GET("/member/:id", loadMemberPage)
 	router.POST("/kudo", handleKudoCmd)
 	router.POST("/boo", handleKudoCmd)
 
@@ -118,7 +120,7 @@ func getCommandParams(r *http.Request) (string, string, error) {
 }
 
 func randomColor() string {
-	colors := []string{"yellow", "pink", "green", "red", "orange", ""}
+	colors := []string{"yellow", "pink", "green", "red", "orange", "purple", ""}
 	return colors[rand.Intn(len(colors))]
 }
 

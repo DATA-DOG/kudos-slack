@@ -1,0 +1,24 @@
+{{ define "head" }}
+<style>body { overflow: auto; }</style>
+{{end}}
+{{ define "content" }}
+<h3 class="text-center color-white">{{.Member.Profile.FirstName}} {{.Member.Profile.LastName}} received kudos</h3>
+<div style="margin-top: 40px">
+    <div class="notes">
+    {{range .Kudos}}
+    <div class="note">
+        <div class="pin"></div>
+        {{if eq .Value -1}}<div class="sad"></div>{{end}}
+        <p>
+            <a href="/member/{{$.Member.ID}}" class="note-receiver-link">@{{$.Member.Name}}</a>,
+        <br>
+        {{.Text}}
+        </p>
+        <a href="/member/{{.MemberFrom.ID}}">@{{.MemberFrom.Name}}</a>
+    </div>
+    {{else}}
+        <span class="color-white">No kudos found</span>
+    {{end}}
+    </div>
+</div>
+{{ end }}

@@ -10,18 +10,20 @@ import (
 
 // Config main config file structure
 type Config struct {
-	SlackToken          string `yaml:"slack_token"`
-	Port                int    `yaml:"port"`
-	SlackWebookURL      string `yaml:"slack_webhook_url"`
-	Channel             string `yaml:"channel"`
-	Database            string `yaml:"database"`
-	SlackCommandToken   string `yaml:"slack_command_token"`
-	AssetPath           string `yaml:"asset_path"`
-	CalendarID          string `yaml:"calendar_id"`
-	FullCalendarID      string `yaml:"full_calendar_id"`
-	CalendarSecret      string `yaml:"calendar_secret"`
-	CalendarCredentials string `yaml:"calendar_credentials"`
-	TemplatesPath       string `yaml:"templates_path"`
+	SlackToken                    string `yaml:"slack_token"`
+	Port                          int    `yaml:"port"`
+	SlackWebookURL                string `yaml:"slack_webhook_url"`
+	Channel                       string `yaml:"channel"`
+	Database                      string `yaml:"database"`
+	SlackCommandToken             string `yaml:"slack_command_token"`
+	AssetPath                     string `yaml:"asset_path"`
+	CalendarID                    string `yaml:"calendar_id"`
+	FullCalendarID                string `yaml:"full_calendar_id"`
+	CalendarSecret                string `yaml:"calendar_secret"`
+	CalendarCredentials           string `yaml:"calendar_credentials"`
+	AnniversariesSheetCredentials string `yaml:"anniversaries_sheet_credentials"`
+	AnniversariesSheetId          string `yaml:"anniversaries_sheet_id"`
+	TemplatesPath                 string `yaml:"templates_path"`
 }
 
 var config Config

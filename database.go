@@ -136,8 +136,8 @@ func loadKudosGaveList() []KudosStats {
 
 	rows, err := db.Query(`
 			SELECT userFrom, count(id) as pts FROM kudos
-			GROUP by userFrom ORDER BY pts DESC
-			LIMIT 5
+			WHERE kudos.date > date('now','-1 year')
+			GROUP by userFrom HAVING count(id) > 0  ORDER BY pts DESC
 			`)
 	checkErr(err)
 	defer rows.Close()
@@ -164,8 +164,8 @@ func loadKudosReceivedList() []KudosStats {
 	rows, err := db.Query(`
 			SELECT userTo, SUM(value) as pts FROM kudos ku
 			INNER JOIN kudos_receiver kr ON kr.kudos_id = ku.id
-			GROUP by userTo ORDER BY pts DESC
-			LIMIT 5
+			WHERE ku.date > date('now','-1 year')
+			GROUP by userTo HAVING SUM(value) > 0 ORDER BY pts DESC
 			`)
 	checkErr(err)
 	defer rows.Close()
@@ -185,6 +185,32 @@ func loadKudosReceivedList() []KudosStats {
 		i = i + 1
 	}
 	return statsList
+}
+
+func loadKudosReceivedByUser(userId string) []Kudo {
+	stmt, err := db.Prepare(`SELECT ku.id, ku.userFrom, ku.message, ku.value, ku.date
+			FROM kudos ku
+			JOIN kudos_receiver ON ku.id = kudos_receiver.kudos_id
+			WHERE userTo = ?
+			ORDER BY ku.date DESC
+	`)
+
+	checkErr(err)
+	rows, err := stmt.Query(userId)
+	defer rows.Close()
+
+	var kudos []Kudo
+
+	for rows.Next() {
+		var kudo Kudo
+		var memberFrom, date string
+		err = rows.Scan(&kudo.ID, &memberFrom, &kudo.Text, &kudo.Value, &date)
+		kudo.MemberFrom, _ = findMemberByID(memberFrom)
+		kudo.Date, _ = time.Parse(time.RFC3339, date)
+		kudos = append(kudos, kudo)
+	}
+
+	return kudos
 }
 
 func generateStatsResult(memberFrom string, pts int, i int, max float32) KudosStats {
