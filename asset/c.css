@@ -38,6 +38,10 @@ body.dd .note
   background-size: cover;
 }
 
+body.dd .note.note-colored {
+  background-image: url(c.png);
+}
+
 body.easter .note
  {
   background-image: url('./egg.png');
@@ -82,7 +86,7 @@ body.easter .note
 }
 
 .note-orange {
-  background-color: #DAA065;
+  background-color: #EB8258;
 }
 
 .note-red {
@@ -97,6 +101,10 @@ body.easter .note
   background-color: #D757C5;
 }
 
+.note-purple {
+  background-color: #995D81;
+}
+
 .note-yellow {
   background-color: #CEC967;
 }
@@ -109,12 +117,13 @@ body.easter .note
   margin: 0;
 }
 
-.note span {
+.note span, .note a  {
   font-size: 1.5em;
   display: inline-block;
   width: 270px;
   text-align: right;
   position: absolute;
+  color: #000;
 }
 
 .pin {
@@ -155,7 +164,7 @@ body.easter .note
   box-shadow: -3px 3px 3px rgba(0,0,0,0.3);
   font-family: 'Arial', 'Droid Sans', sans-serif;
   font-size: 1.5em;
-  padding-bottom: 30px;
+  padding-bottom: 10px;
   color: white;
 }
 
@@ -164,7 +173,8 @@ body.easter .note
 }
 
 .content-box h2 {
-  padding: 35px 0 20px 30px;
+  padding: 35px 0 0 30px;
+  margin-bottom: 5px;
 }
 
 .text-muted {
@@ -196,7 +206,7 @@ body.easter .note
 }
 
 .stats-list {
-  padding: 0px 10px;
+  padding: 25px 10px 0;
 }
 
 .stats-list-row {
@@ -246,6 +256,49 @@ body.easter .note
 
 .fc-title {
   font-family: Arial;
+}
+
+.stats-list .stats-list-row {
+  display: block;
+}
+.stats-list .stats-list-row:nth-child(n+6) {
+  display: none;
+}
+
+.show-list {
+  overflow-y: scroll;
+  max-height: 300px;
+}
+
+.show-list-button {
+  text-align: right;
+  line-height: 1;
+  font-size: 16px;
+  padding-right: 15px;
+}
+
+.show-list.stats-list .stats-list-row {
+  display: block;
+}
+
+.color-white {
+  color: #fff;
+}
+
+.member-link, .member-link:hover, .member-link:focus {
+  color: #fff;
+}
+
+.note a.note-receiver-link {
+  display: inline;
+  font-size: inherit;
+  text-align: left;
+  position: static;
+  width: auto;
+}
+
+.header-year {
+  font-size: 50px;
 }
 
 /* latin-ext */

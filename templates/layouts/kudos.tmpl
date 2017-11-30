@@ -11,8 +11,8 @@
     {{if eq .Item.Value -1}}
       <div class="sad"></div>
     {{end}}
-    <p>{{range .Item.Recipients}}@{{.Name}}, {{end}}<br>{{range .Text}}{{.}}<br>{{end}}</p>
-    <span>@{{.Item.MemberFrom.Name}}</span>
+    <p>{{range .Item.Recipients}}<a href="/member/{{.ID}}" class="note-receiver-link">@{{.Name}}</a>, {{end}}<br>{{range .Text}}{{.}}<br>{{end}}</p>
+    <a href="/member/{{.Item.MemberFrom.ID}}">@{{.Item.MemberFrom.Name}}</a>
   </div>
 {{end}}
 </div>
@@ -33,7 +33,7 @@
               {{end}}
               <img src="{{.Member.Profile.Image192}}" class="profile-image" />
             </div>
-            {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
+            <a href="/member/{{.Member.ID}}" class="member-link">{{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}</a>
           </div>
           <div class="col-xs-6 stats-progress-column">
             <div class="row">
@@ -49,6 +49,9 @@
           <div class="clearfix"></div>
       </div>
     {{end}}
+    </div>
+    <div class="show-list-button">
+        <a href="#" class="js-toggle-list member-link">Show more</a>
     </div>
   </div>
   <div class="content-box statistics">
@@ -65,7 +68,7 @@
               {{end}}
               <img src="{{.Member.Profile.Image192}}" class="profile-image" />
             </div>
-            {{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}
+            <a href="/member/{{.Member.ID}}" class="member-link">{{.Member.Profile.FirstName}} {{.Member.Profile.LastName}}</a>
           </div>
           <div class="col-xs-6 stats-progress-column">
             <div class="row">
@@ -82,8 +85,22 @@
       </div>
     {{end}}
     </div>
+    <div class="show-list-button">
+        <a href="#" class="js-toggle-list member-link">Show more</a>
+    </div>
   </div>
 
 </div>
 </div>
+<script>
+$('.js-toggle-list').click(function() {
+    var parent = $(this).parents('.statistics').find('.stats-list');
+    parent.toggleClass('show-list');
+    if (parent.hasClass('show-list')) {
+        $(this).text('Show less');
+    } else {
+        $(this).text('Show more');
+    }
+});
+</script>
 {{ end }}

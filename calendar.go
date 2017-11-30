@@ -34,6 +34,17 @@ func getClient(ctx context.Context, authConfig *oauth2.Config) *http.Client {
 	return authConfig.Client(ctx, tok)
 }
 
+// getClient uses a Context and Config to retrieve a Token
+// then generate a Client. It returns the generated Client.
+func getSheetClient(ctx context.Context, authConfig *oauth2.Config) *http.Client {
+	tok, err := tokenFromFile(config.AnniversariesSheetCredentials)
+	if err != nil {
+		tok = getTokenFromWeb(authConfig)
+		saveToken(config.AnniversariesSheetCredentials, tok)
+	}
+	return authConfig.Client(ctx, tok)
+}
+
 // getTokenFromWeb uses Config to request a Token.
 // It returns the retrieved Token.
 func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
